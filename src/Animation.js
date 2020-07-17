@@ -6,6 +6,8 @@ import "./styles.scss";
 // import CreditCard from "./CreditCard";
 import Card from "./Card";
 import Plane from "./Plane";
+// import Amex from "./assets/Cards/AMEX.png";
+import Visa from "./assets/Cards/VISA.png";
 
 export default function Animation() {
   return (
@@ -16,8 +18,8 @@ export default function Animation() {
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
       }}
     >
-      {/* <fog attach="fog" args={["white", 100, 100]} /> */}
       <Controls />
+      {/* <fog attach="fog" args={["white", 100, 100]} /> */}
       <ambientLight intensity={0.2} />
       <spotLight
         position={[10, 10, 40]}
@@ -28,6 +30,7 @@ export default function Animation() {
       />
 
       <Card
+        cardType={Visa}
         number={"4242 4242 1561 1234"}
         name={"Craig Gant"}
         expiry={"01/23"}
