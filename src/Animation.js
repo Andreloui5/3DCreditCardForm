@@ -6,37 +6,40 @@ import "./styles.scss";
 // import CreditCard from "./CreditCard";
 import Card from "./Card";
 import Plane from "./Plane";
-// import Amex from "./assets/Cards/AMEX.png";
-import Visa from "./assets/Cards/VISA.png";
+import Amex from "./assets/Cards/AMEX.png";
+// import Visa from "./assets/Cards/VISA.png";
+import BackDrop from "./BackDrop";
+import Lighting from "./Lighting";
 
 export default function Animation(props) {
   return (
     <Canvas
       className={"cardAnimation"}
-      camera={{ position: [0, 0, 40] }}
+      camera={{ position: [0, 0, 30] }}
       onCreated={({ gl }) => {
         gl.shadowMap.enabled = true;
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
       }}
     >
       <Controls />
-      {/* <fog attach="fog" args={["white", 100, 100]} /> */}
-      <ambientLight intensity={0.2} />
+      <fog attach="fog" args={["#efefef", 200, 200]} />
+      {/* <ambientLight intensity={0.2} />
       <spotLight
         position={[10, 10, 40]}
         penumbra={1}
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         castShadow
-      />
-
+      /> */}
+      <Lighting />
       <Card
-        cardType={Visa}
+        cardType={Amex}
         number={props.cardNum}
         name={props.cardName}
         expiry={props.expDate}
       />
       <Plane />
+      <BackDrop />
     </Canvas>
   );
 }

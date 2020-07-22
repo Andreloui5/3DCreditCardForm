@@ -14,14 +14,13 @@ function Card(props) {
 
   return (
     <group ref={creditCard}>
-      <mesh castShadow receiveShadow>
+      <mesh castShadow>
         <boxBufferGeometry attach="geometry" args={[30, 20, 0.5]} />
-
         <meshStandardMaterial
           map={texture}
           attach="material"
-          roughness={0.3}
-          metalness={0.5}
+          roughness={0.1}
+          metalness={0}
         />
       </mesh>
       {/* Card Number */}
