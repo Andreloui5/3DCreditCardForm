@@ -4,21 +4,21 @@ body,
 canvas {
   margin: 0;
   padding: 0;
-  height: 100vh;
-  width: 100vw;
+
+}
+
+* {
+box-sizing: border-box;
 }
 
 body{
-  background: white;
-  // background: #171717;
-  // background: radial-gradient(at 50% 100%, #873740 0%, #272730 40%, #171720 80%, #070710 100%);
-}
-
-#root {
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
-  overflow: hidden;
+  // background: white;
+  height: 100vh;
+  width: 0 auto;
+  background-color: #2D3047;
+  background-image: linear-gradient(147deg, #2D3047 0%, #eae6e5 74%);
+  background-attachment: fixed;
+  overflow: scroll;
 }
 
 .App {

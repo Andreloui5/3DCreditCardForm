@@ -7,7 +7,7 @@ function CardText(props) {
       position={props.position}
       color={"black"}
       fontSize={2}
-      font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
+      font="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap"
       anchorX="left"
       anchorY="middle"
     >

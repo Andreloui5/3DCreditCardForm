@@ -13,17 +13,17 @@ import Lighting from "./Lighting";
 
 export default function Animation(props) {
   return (
-    <Canvas
-      className={"cardAnimation"}
-      camera={{ position: [0, 0, 30] }}
-      onCreated={({ gl }) => {
-        gl.shadowMap.enabled = true;
-        gl.shadowMap.type = THREE.PCFSoftShadowMap;
-      }}
-    >
-      <Controls />
-      <fog attach="fog" args={["#efefef", 200, 200]} />
-      {/* <ambientLight intensity={0.2} />
+    <div className={"cardAnimation"}>
+      <Canvas
+        camera={{ position: [0, 0, 30] }}
+        onCreated={({ gl }) => {
+          gl.shadowMap.enabled = true;
+          gl.shadowMap.type = THREE.PCFSoftShadowMap;
+        }}
+      >
+        <Controls />
+        <fog attach="fog" args={["#efefef", 200, 200]} />
+        {/* <ambientLight intensity={0.2} />
       <spotLight
         position={[10, 10, 40]}
         penumbra={1}
@@ -31,15 +31,16 @@ export default function Animation(props) {
         shadow-mapSize-height={2048}
         castShadow
       /> */}
-      <Lighting />
-      <Card
-        cardType={Amex}
-        number={props.cardNum}
-        name={props.cardName}
-        expiry={props.expDate}
-      />
-      <Plane />
-      <BackDrop />
-    </Canvas>
+        <Lighting />
+        <Card
+          cardType={Amex}
+          number={props.cardNum}
+          name={props.cardName}
+          expiry={props.expDate}
+        />
+        {/* <Plane />
+      <BackDrop /> */}
+      </Canvas>
+    </div>
   );
 }
