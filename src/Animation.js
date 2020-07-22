@@ -9,9 +9,10 @@ import Plane from "./Plane";
 // import Amex from "./assets/Cards/AMEX.png";
 import Visa from "./assets/Cards/VISA.png";
 
-export default function Animation() {
+export default function Animation(props) {
   return (
     <Canvas
+      className={"cardAnimation"}
       camera={{ position: [0, 0, 40] }}
       onCreated={({ gl }) => {
         gl.shadowMap.enabled = true;
@@ -31,9 +32,9 @@ export default function Animation() {
 
       <Card
         cardType={Visa}
-        number={"4242 4242 1561 1234"}
-        name={"Craig Gant"}
-        expiry={"01/23"}
+        number={props.cardNum}
+        name={props.cardName}
+        expiry={props.expDate}
       />
       <Plane />
     </Canvas>

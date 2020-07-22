@@ -15,9 +15,9 @@ body{
 }
 
 #root {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
   overflow: hidden;
 }
 
@@ -27,13 +27,10 @@ body{
 }
 
 .card{
-  position: absolute;
+  margin: 30px;
+  padding: 15px;
   max-width: 500px;
   max-height: 700px;
-  top: calc(50% - 500px / 2);
-  left: calc(50% - 500px / 2);
-  display: flex;
-  justify-content: center;
   z-index: 10;
   background-color: #171717;
 }
@@ -57,4 +54,12 @@ h1{
 
 .myCard {
   border-radius: 15px;
+}
+
+.cardAnimation{
+  margin: 30px;
+  padding: 15px;
+  max-width: 500px;
+  max-height: 500px;
+  z-index: 10;
 }
