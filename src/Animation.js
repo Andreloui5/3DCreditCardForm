@@ -21,15 +21,15 @@ export default function Animation(props) {
       >
         <Controls />
         <fog attach="fog" args={["#efefef", 200, 200]} />
-        {/* <ambientLight intensity={0.2} />
-        <spotLight
-        position={[10, 10, 40]}
-        penumbra={1}
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        castShadow
-      /> */}
-        <Lighting />
+        <ambientLight intensity={0.7} />
+        {/* <spotLight
+          position={[10, 10, 40]}
+          penumbra={1}
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          castShadow
+        /> */}
+        {/* <Lighting /> */}
         <Card
           cardType={props.cardType}
           number={props.cardNum}

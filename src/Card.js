@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useEffect, useState } from "react";
 // import { useFrame } from "react-three-fiber";
 import CardText from "./CardText";
 import * as THREE from "three";
@@ -6,6 +6,10 @@ import * as THREE from "three";
 function Card(props) {
   const creditCard = useRef();
   // useFrame(() => (creditCard.current.rotation.y += 0.01));
+
+  // ADD USESTATE FOR CARDTYPE???
+  // ADD USEEFFECT HOOK WITH LISTENER ON PROPS.CARDNUM
+
   const texture = useMemo(
     () => new THREE.TextureLoader().load(props.cardType),
     [props.cardType]

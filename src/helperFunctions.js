@@ -1,4 +1,11 @@
 import valid from "card-validator";
+import Amex from "./assets/Cards/Amex.png";
+import Default from "./assets/Cards/Default.png";
+import Diners from "./assets/Cards/Diners.png";
+import Discover from "./assets/Cards/Discover.png";
+import Jcb from "./assets/Cards/Jcb.png";
+import Visa from "./assets/Cards/Visa.png";
+import Mastercard from "./assets/Cards/Mastercard.png";
 
 export function validateInputs(name, number, date, cvv) {
   // check for a (potentially) valid credit card number
@@ -88,4 +95,35 @@ export function cvvCheck(text) {
   let formatted = sliced.join("");
 
   return formatted;
+}
+
+export function findCardType(number) {
+  const firstNumber = number.toString().charAt(0);
+  const secondNumber = number.toString().slice(1, 2);
+  let cardType;
+
+  switch (firstNumber) {
+    case "3":
+      !secondNumber
+        ? (cardType = Default)
+        : secondNumber === "4" || secondNumber === "7"
+        ? (cardType = Amex)
+        : secondNumber === "5"
+        ? (cardType = Jcb)
+        : (cardType = Diners);
+      break;
+    case "4":
+      cardType = Visa;
+      break;
+    case "5":
+      cardType = Mastercard;
+      break;
+    case "6":
+      cardType = Discover;
+      break;
+    default:
+      cardType = Default;
+      break;
+  }
+  return cardType;
 }
