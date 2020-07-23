@@ -11,6 +11,13 @@ import Animation from "./Animation";
 import AnimatedCard from "./AnimatedCardPure";
 import CardFormDetails from "./FormContents/CardFormDetails";
 // import BuyerFormDetails from "./FormContents/BuyerFormDetails";
+import Amex from "./assets/Cards/Amex.png";
+import Default from "./assets/Cards/Default.png";
+import Diners from "./assets/Cards/Diners.png";
+import Discover from "./assets/Cards/Discover.png";
+import Jcb from "./assets/Cards/Jcb.png";
+import Visa from "./assets/Cards/Visa.png";
+import Mastercard from "./assets/Cards/Mastercard.png";
 import "./styles.scss";
 
 export default function App() {
@@ -30,6 +37,7 @@ export default function App() {
   const [cardName, setName] = useState(null);
   const [expDate, setExpDate] = useState(null);
   const [cvv, setCvv] = useState(null);
+  const [cardType, setCardType] = useState("Default");
 
   // global onChange State handler for credit card entry
   const handleCardChange = (evt) => {
@@ -74,6 +82,7 @@ export default function App() {
   // Formats card number into readable chunks
   const handleFormChange = (text) => {
     let userCardInput = formatCreditCard(text);
+    setCardType(findCardType(userCardInput));
     setCardNum(userCardInput);
   };
 
@@ -106,6 +115,37 @@ export default function App() {
   const [address, setAddress] = useState(null);
   const [cityState, setCityState] = useState(null);
   const [zipCode, setZipCode] = useState(null);
+
+  function findCardType(number) {
+    const firstNumber = number.toString().charAt(0);
+    const secondNumber = number.toString().slice(1, 2);
+    let cardType;
+
+    switch (firstNumber) {
+      case "3":
+        !secondNumber
+          ? (cardType = Default)
+          : secondNumber === "4" || secondNumber === "7"
+          ? (cardType = Amex)
+          : secondNumber === "5"
+          ? (cardType = Jcb)
+          : (cardType = Diners);
+        break;
+      case "4":
+        cardType = Visa;
+        break;
+      case "5":
+        cardType = Mastercard;
+        break;
+      case "6":
+        cardType = Discover;
+        break;
+      default:
+        cardType = Default;
+        break;
+    }
+    return cardType;
+  }
 
   return (
     <>
@@ -145,19 +185,6 @@ export default function App() {
             handleSubmit={handleSubmit}
             title={"Payment Info"}
           />
-
-          {/* <AnimatedCard
-            formDetails={BuyerFormDetails(
-              buyerName,
-              address,
-              cityState,
-              zipCode
-            )}
-            handleChange={handleCardChange}
-            handleSubmit={handleSubmit}
-            title={"Buyer Info"}
-          /> */}
-
           {/* Main Animation Component */}
           <Animation
             as={Row}
@@ -165,6 +192,7 @@ export default function App() {
             cardName={cardName}
             expDate={expDate}
             cvv={cvv}
+            cardType={cardType}
           />
           <AnimatedCard
             formDetails={CardFormDetails(cardName, cardNum, expDate, cvv)}

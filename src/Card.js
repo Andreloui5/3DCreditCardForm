@@ -6,7 +6,6 @@ import * as THREE from "three";
 function Card(props) {
   const creditCard = useRef();
   // useFrame(() => (creditCard.current.rotation.y += 0.01));
-
   const texture = useMemo(
     () => new THREE.TextureLoader().load(props.cardType),
     [props.cardType]
@@ -24,11 +23,11 @@ function Card(props) {
         />
       </mesh>
       {/* Card Number */}
-      <CardText position={[-13, -1, 0.5]} text={props.number} />
+      <CardText position={[-13, -1, 0.5]} text={props.number} fontSize={2.1} />
       {/* Customer Name */}
-      <CardText position={[-13, -7, 0.5]} text={props.name} />
+      <CardText position={[-13, -7, 0.5]} text={props.name} fontSize={1.9} />
       {/* Expiration Date */}
-      <CardText position={[5, -7, 0.5]} text={props.expiry} />
+      <CardText position={[5, -7, 0.5]} text={props.expiry} fontSize={1.9} />
     </group>
   );
 }

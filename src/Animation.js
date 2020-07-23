@@ -5,10 +5,8 @@ import Controls from "./Controls";
 import "./styles.scss";
 // import CreditCard from "./CreditCard";
 import Card from "./Card";
-import Plane from "./Plane";
-import Amex from "./assets/Cards/AMEX.png";
-// import Visa from "./assets/Cards/VISA.png";
-import BackDrop from "./BackDrop";
+// import Plane from "./Plane";
+// import BackDrop from "./BackDrop";
 import Lighting from "./Lighting";
 
 export default function Animation(props) {
@@ -24,7 +22,7 @@ export default function Animation(props) {
         <Controls />
         <fog attach="fog" args={["#efefef", 200, 200]} />
         {/* <ambientLight intensity={0.2} />
-      <spotLight
+        <spotLight
         position={[10, 10, 40]}
         penumbra={1}
         shadow-mapSize-width={2048}
@@ -33,7 +31,7 @@ export default function Animation(props) {
       /> */}
         <Lighting />
         <Card
-          cardType={Amex}
+          cardType={props.cardType}
           number={props.cardNum}
           name={props.cardName}
           expiry={props.expDate}

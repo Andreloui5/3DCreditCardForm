@@ -6,7 +6,7 @@ function CardText(props) {
     <Text
       position={props.position}
       color={"black"}
-      fontSize={2}
+      fontSize={props.fontSize}
       font="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap"
       anchorX="left"
       anchorY="middle"
