@@ -7,21 +7,21 @@ import "./styles.scss";
 import Card from "./Card";
 // import Plane from "./Plane";
 // import BackDrop from "./BackDrop";
-import Lighting from "./Lighting";
 
 export default function Animation(props) {
   return (
-    <div className={"cardAnimation"}>
+    <div>
       <Canvas
-        camera={{ position: [0, 0, 30] }}
+        className={"cardAnimation"}
+        camera={{ position: [0, 0, 20] }}
         onCreated={({ gl }) => {
           gl.shadowMap.enabled = true;
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
         }}
       >
         <Controls />
-        <fog attach="fog" args={["#efefef", 200, 200]} />
-        <ambientLight intensity={0.7} />
+        <fog attach="fog" args={["#548687;", 150, 150]} />
+        <ambientLight intensity={0.8} />
         {/* <spotLight
           position={[10, 10, 40]}
           penumbra={1}
@@ -29,15 +29,15 @@ export default function Animation(props) {
           shadow-mapSize-height={2048}
           castShadow
         /> */}
-        {/* <Lighting /> */}
+
         <Card
           cardType={props.cardType}
           number={props.cardNum}
           name={props.cardName}
           expiry={props.expDate}
         />
-        {/* <Plane />
-      <BackDrop /> */}
+        {/* <Plane /> */}
+        {/* <BackDrop /> */}
       </Canvas>
     </div>
   );

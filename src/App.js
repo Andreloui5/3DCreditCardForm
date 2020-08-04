@@ -8,11 +8,10 @@ import {
   cvvCheck,
   findCardType,
 } from "./helperFunctions";
-import Animation from "./Animation";
 import AnimatedCard from "./AnimatedCardPure";
+import AnimatedCardWithCreditCard from "./AnimatedCardWithCreditCard";
 import CardFormDetails from "./FormContents/CardFormDetails";
-// import Default from "./assets/Cards/Default.png";
-// import BuyerFormDetails from "./FormContents/BuyerFormDetails";
+import BuyerFormDetails from "./FormContents/BuyerFormDetails";
 import "./styles.scss";
 
 export default function App() {
@@ -29,10 +28,18 @@ export default function App() {
   const [cardState, setCardState] = useState({});
   // Formatted Values
   const [cardNum, setCardNum] = useState("");
-  const [cardName, setName] = useState(null);
-  const [expDate, setExpDate] = useState(null);
-  const [cvv, setCvv] = useState(null);
-  const [cardType, setCardType] = useState(null);
+  const [cardName, setName] = useState("");
+  const [expDate, setExpDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [cardType, setCardType] = useState("");
+
+  // ***** State for Buyer Info *****
+
+  const [buyerName, setBuyerName] = useState("");
+  const [address, setAddress] = useState("");
+  const [cityState, setCityState] = useState("");
+  const [zipCode, setZipCode] = useState("");
+
   // global onChange State handler for credit card entry
   const handleCardChange = (evt) => {
     const value = evt.target.value;
@@ -66,11 +73,9 @@ export default function App() {
     }
   };
 
+  // take this function away and just use setCardState in submit handler
   function resetState() {
-    setName(null);
-    setCardNum(null);
-    setExpDate(null);
-    setCvv(null);
+    setCardState("");
   }
 
   // Formats card number into readable chunks
@@ -91,24 +96,23 @@ export default function App() {
     setCvv(userCvvInput);
   };
 
-  // Formats user input and sets individual field states for credit card form
+  // Formats user input and sets individual field states for all forms
   useEffect(() => {
     cardState.cardNum
-      ? handleFormChange(cardState.cardNum)
+      ? handleFormChange(cardState.cardNum, formatCreditCard, setCardNum)
       : handleFormChange(" ");
     cardState.expDate
       ? handleDateChange(cardState.expDate)
       : handleDateChange(" ");
     cardState.cvv ? handleCvvChange(cardState.cvv) : handleCvvChange(" ");
-    cardState.cardName ? setName(cardState.cardName) : setName();
+    cardState.cardName ? setName(cardState.cardName) : setName(" ");
+    cardState.buyerName ? setBuyerName(cardState.buyerName) : setBuyerName(" ");
+    cardState.address ? setAddress(cardState.address) : setAddress(" ");
+    cardState.cityState ? setCityState(cardState.cityState) : setCityState(" ");
+    cardState.zipCode ? setZipCode(cardState.zipCode) : setZipCode(" ");
   }, [cardState]);
 
-  // ***** State for Buyer Info *****
-  const [buyerName, setBuyerName] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [cityState, setCityState] = useState(null);
-  const [zipCode, setZipCode] = useState(null);
-
+  // sets card type when the card Number changes
   useEffect(() => {
     const currentCard = findCardType(cardNum);
     setCardType(currentCard);
@@ -146,32 +150,28 @@ export default function App() {
 
         {/* Form for inputting commerce info */}
         <Row>
-          <AnimatedCard
+          <AnimatedCardWithCreditCard
             formDetails={CardFormDetails(cardName, cardNum, expDate, cvv)}
             handleChange={handleCardChange}
             handleSubmit={handleSubmit}
             title={"Payment Info"}
-          />
-          {/* Main Animation Component */}
-          <Animation
-            as={Row}
             cardNum={cardNum}
             cardName={cardName}
             expDate={expDate}
             cvv={cvv}
             cardType={cardType}
           />
+
           <AnimatedCard
-            formDetails={CardFormDetails(cardName, cardNum, expDate, cvv)}
+            formDetails={BuyerFormDetails(
+              buyerName,
+              address,
+              cityState,
+              zipCode
+            )}
             handleChange={handleCardChange}
             handleSubmit={handleSubmit}
-            title={"Payment Info"}
-          />
-          <AnimatedCard
-            formDetails={CardFormDetails(cardName, cardNum, expDate, cvv)}
-            handleChange={handleCardChange}
-            handleSubmit={handleSubmit}
-            title={"Payment Info"}
+            title={"Billing Info"}
           />
         </Row>
       </Container>

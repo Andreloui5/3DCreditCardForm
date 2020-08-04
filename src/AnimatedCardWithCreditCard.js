@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Row, Form, Card, Col } from "react-bootstrap";
 import { useSpring, animated } from "react-spring";
 import FormElement from "./FormElement";
+import Animation from "./Animation";
 
 function AnimatedCard(props) {
   // Animation Value
@@ -16,7 +17,7 @@ function AnimatedCard(props) {
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
       onClick={() => setHovered(true)}
-      style={{ hoverOpacity }}
+      style={hoverOpacity}
     >
       <Row>
         <Card as={Col} sm={12} className="class rounded">
@@ -26,6 +27,14 @@ function AnimatedCard(props) {
             className="p-4"
             style={{ opacity: 1 }}
           >
+            <Animation
+              cardNum={props.cardNum}
+              cardName={props.cardName}
+              expDate={props.expDate}
+              cvv={props.cvv}
+              cardType={props.cardType}
+            />
+
             <Form.Row>
               {props.formDetails.map((field) => (
                 <FormElement

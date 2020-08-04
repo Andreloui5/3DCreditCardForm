@@ -4,7 +4,8 @@ body,
 canvas {
   margin: 0;
   padding: 0;
-
+  height: 100vh;
+  width: 100vw;
 }
 
 * {
@@ -13,8 +14,6 @@ box-sizing: border-box;
 
 body{
   // background: white;
-  height: 100vh;
-  width: 0 auto;
   background-color: #2D3047;
   background-image: linear-gradient(147deg, #2D3047 0%, #eae6e5 74%);
   background-attachment: fixed;
@@ -32,7 +31,7 @@ body{
   max-width: 500px;
   max-height: 700px;
   z-index: 10;
-  background-color: #171717;
+  background-color: #548687;
 }
 
 .button {
@@ -57,9 +56,12 @@ h1{
 }
 
 .cardAnimation{
-  margin: 30px;
-  padding: 15px;
   max-width: 500px;
-  max-height: 500px;
+  max-height: 300px;
   z-index: 10;
+
+  background: #548687;
+  box-shadow: inset 20px 20px 60px #477273,
+              inset -20px -20px 60px #619a9b;
 }
+
