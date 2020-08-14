@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Alert } from "react-bootstrap";
+import { Container, Row, Col, Alert, Button } from "react-bootstrap";
 import {
   validateInputs,
   figureOutErrors,
@@ -13,6 +13,12 @@ import AnimatedCardWithCreditCard from "./AnimatedCardWithCreditCard";
 import CardFormDetails from "./FormContents/CardFormDetails";
 import BuyerFormDetails from "./FormContents/BuyerFormDetails";
 import "./styles.scss";
+import Commerce from "@chec/commerce.js";
+
+const commerce = new Commerce(
+  "pk_test_183505c17b9df667acd2e6f925c4957b715322209303f",
+  true
+);
 
 export default function App() {
   const [validated, setValidated] = useState(false);
@@ -96,10 +102,28 @@ export default function App() {
     setCvv(userCvvInput);
   };
 
+  //Generates commerce.js checkout token on pageload
+  useEffect(() => {
+    // take the cartId from the url
+    // let cartId = props.match.params.id;
+    // commerce.checkout.generateToken(cartId, { type: "cart" })
+    commerce.checkout
+      // this is an example token, made with a single product permalink. The comment above shows how to use a normal case.
+      .generateToken("prod0egY5edW2o3QnA", { type: "permalink" })
+      .then((res) => {
+        const checkoutTokenId = res.id;
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("something went wrong with the token generation", err);
+      });
+  }, []);
+
   // Formats user input and sets individual field states for all forms
   useEffect(() => {
+    // each of the following looks for an entry in a field and, if there is one, updates the corresponding hook
     cardState.cardNum
-      ? handleFormChange(cardState.cardNum, formatCreditCard, setCardNum)
+      ? handleFormChange(cardState.cardNum)
       : handleFormChange(" ");
     cardState.expDate
       ? handleDateChange(cardState.expDate)
@@ -150,29 +174,35 @@ export default function App() {
 
         {/* Form for inputting commerce info */}
         <Row>
-          <AnimatedCardWithCreditCard
-            formDetails={CardFormDetails(cardName, cardNum, expDate, cvv)}
-            handleChange={handleCardChange}
-            handleSubmit={handleSubmit}
-            title={"Payment Info"}
-            cardNum={cardNum}
-            cardName={cardName}
-            expDate={expDate}
-            cvv={cvv}
-            cardType={cardType}
-          />
-
-          <AnimatedCard
-            formDetails={BuyerFormDetails(
-              buyerName,
-              address,
-              cityState,
-              zipCode
-            )}
-            handleChange={handleCardChange}
-            handleSubmit={handleSubmit}
-            title={"Billing Info"}
-          />
+          <Col md={true}></Col>
+          <Col>
+            <AnimatedCardWithCreditCard
+              formDetails={CardFormDetails(cardName, cardNum, expDate, cvv)}
+              handleChange={handleCardChange}
+              handleSubmit={handleSubmit}
+              title={"Payment Info"}
+              cardNum={cardNum}
+              cardName={cardName}
+              expDate={expDate}
+              cvv={cvv}
+              cardType={cardType}
+            />
+            <AnimatedCard
+              formDetails={BuyerFormDetails(
+                buyerName,
+                address,
+                cityState,
+                zipCode
+              )}
+              handleChange={handleCardChange}
+              handleSubmit={handleSubmit}
+              title={"Billing Info"}
+            />
+            <Button id="submit" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </Col>
+          <Col md={true}></Col>
         </Row>
       </Container>
     </>
