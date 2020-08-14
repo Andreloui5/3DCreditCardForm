@@ -21,7 +21,6 @@ const commerce = new Commerce(
 );
 
 export default function App() {
-  const [validated, setValidated] = useState(false);
   const [validationInfo, setValidationInfo] = useState(null);
   // State for popups
   const [showSuccess, setShowSuccess] = useState(false);
@@ -74,13 +73,9 @@ export default function App() {
     event.preventDefault();
     // check the inputs for validity
     if (validateInputs(cardName, cardNum, expDate, cvv)) {
-      setValidated(true);
-      setShowSuccess(true);
+      // sends checkout to Commerce
       executeCheckout(checkoutToken);
-      resetState();
     } else {
-      // ? setValidated(true) && showSuccess(true)
-      setValidated(false);
       let fail = figureOutErrors(cardName, cardNum, expDate, cvv);
       setValidationInfo(fail);
       setShowFail(true);
@@ -141,6 +136,9 @@ export default function App() {
         },
       })
       .then((response) => {
+        // triggers success popup message
+        setShowSuccess(true);
+        resetState();
         console.log(
           "Great, your checkout was captured successfully! Checkout the response object for receipt info.",
           response
