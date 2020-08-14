@@ -27,6 +27,11 @@ export default function App() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showFail, setShowFail] = useState(false);
 
+  // State for checkout token
+  const [checkoutToken, setCheckoutToken] = useState("");
+
+  // Line Items in the current checkout Token
+  const [lineItems, setLineItems] = useState("");
   // State for different cards
 
   //*****  Credit Card form *****
@@ -41,9 +46,12 @@ export default function App() {
 
   // ***** State for Buyer Info *****
 
-  const [buyerName, setBuyerName] = useState("");
+  const [buyerFirstName, setBuyerFirstName] = useState("");
+  const [buyerLastName, setBuyerLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [cityState, setCityState] = useState("");
+  const [city, setCity] = useState("");
+  const [geoState, setGeoState] = useState("");
   const [zipCode, setZipCode] = useState("");
 
   // global onChange State handler for credit card entry
@@ -68,7 +76,7 @@ export default function App() {
     if (validateInputs(cardName, cardNum, expDate, cvv)) {
       setValidated(true);
       setShowSuccess(true);
-      form.reset();
+      executeCheckout(checkoutToken);
       resetState();
     } else {
       // ? setValidated(true) && showSuccess(true)
@@ -78,6 +86,68 @@ export default function App() {
       setShowFail(true);
     }
   };
+
+  useEffect(() => {
+    //whenever checkoutToken is updated, finds current line items
+    console.log(checkoutToken.id);
+    if (checkoutToken.line_items !== undefined) {
+      let itemsInCart = {};
+      checkoutToken.line_items.forEach((item) => {
+        itemsInCart = {
+          ...itemsInCart,
+          [item.id]: {
+            quantity: 1,
+          },
+        };
+      });
+      console.log(itemsInCart);
+      setLineItems(itemsInCart);
+    }
+  }, [checkoutToken]);
+
+  function executeCheckout(checkoutToken) {
+    commerce.checkout
+      .getToken(checkoutToken.id, {
+        line_items: lineItems,
+        customer: {
+          firstname: buyerFirstName,
+          lastname: buyerLastName,
+          email: email,
+        },
+        shipping: {
+          name: `${buyerFirstName} ${buyerLastName}`,
+          street: address,
+          town_city: city,
+          county_state: geoState,
+          postal_zip_code: zipCode,
+          country: "US",
+        },
+        fulfillment: {
+          // The shipping method ID for "USPS Ground" (for example)
+          // You can use commerce.checkout.getShippingOptions() to get a list
+          shipping_method: "ship_1ypbroE658n4ea",
+        },
+        payment: {
+          // Test Gateway is enabled by default, and is used when you submit orders with
+          // your sandbox API key
+          gateway: "test_gateway",
+          card: {
+            number: cardNum,
+            expiry_month: expDate.substring(0, 2),
+            expiry_year: expDate.substring(3, 5),
+            cvc: cvv,
+            postal_zip_code: zipCode,
+          },
+        },
+      })
+      .then((response) => {
+        console.log(
+          "Great, your checkout was captured successfully! Checkout the response object for receipt info.",
+          response
+        );
+      })
+      .catch((error) => console.error(error));
+  }
 
   // take this function away and just use setCardState in submit handler
   function resetState() {
@@ -104,18 +174,18 @@ export default function App() {
 
   //Generates commerce.js checkout token on pageload
   useEffect(() => {
-    // take the cartId from the url
+    // In most cases, you should pass the cartId through the url from cart page
     // let cartId = props.match.params.id;
     // commerce.checkout.generateToken(cartId, { type: "cart" })
     commerce.checkout
       // this is an example token, made with a single product permalink. The comment above shows how to use a normal case.
-      .generateToken("prod0egY5edW2o3QnA", { type: "permalink" })
+      .generateToken("prodRqEv5xOVPoZz4j", { type: "permalink" })
       .then((res) => {
-        const checkoutTokenId = res.id;
+        setCheckoutToken(res);
         console.log(res);
       })
       .catch((err) => {
-        console.log("something went wrong with the token generation", err);
+        console.log("Something went wrong with the token generation", err);
       });
   }, []);
 
@@ -130,9 +200,16 @@ export default function App() {
       : handleDateChange(" ");
     cardState.cvv ? handleCvvChange(cardState.cvv) : handleCvvChange(" ");
     cardState.cardName ? setName(cardState.cardName) : setName(" ");
-    cardState.buyerName ? setBuyerName(cardState.buyerName) : setBuyerName(" ");
+    cardState.buyerFirstName
+      ? setBuyerFirstName(cardState.buyerFirstName)
+      : setBuyerFirstName(" ");
+    cardState.buyerLastName
+      ? setBuyerLastName(cardState.buyerLastName)
+      : setBuyerLastName(" ");
+    cardState.email ? setEmail(cardState.email) : setEmail(" ");
     cardState.address ? setAddress(cardState.address) : setAddress(" ");
-    cardState.cityState ? setCityState(cardState.cityState) : setCityState(" ");
+    cardState.city ? setCity(cardState.city) : setCity(" ");
+    cardState.geoState ? setGeoState(cardState.geoState) : setGeoState(" ");
     cardState.zipCode ? setZipCode(cardState.zipCode) : setZipCode(" ");
   }, [cardState]);
 
@@ -189,9 +266,12 @@ export default function App() {
             />
             <AnimatedCard
               formDetails={BuyerFormDetails(
-                buyerName,
+                buyerFirstName,
+                buyerLastName,
+                email,
                 address,
-                cityState,
+                city,
+                geoState,
                 zipCode
               )}
               handleChange={handleCardChange}
