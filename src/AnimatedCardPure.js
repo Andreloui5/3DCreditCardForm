@@ -19,7 +19,7 @@ function AnimatedCard(props) {
       style={{ hoverOpacity }}
     >
       <Row>
-        <Card as={Col} sm={12} className="class rounded">
+        <Card as={Col} sm={12} className="rounded">
           <h1 className="text-center mt-4">{props.title}</h1>
           <Form
             onSubmit={props.handleSubmit}

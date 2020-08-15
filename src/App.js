@@ -10,6 +10,7 @@ import {
 } from "./helperFunctions";
 import AnimatedCard from "./AnimatedCardPure";
 import AnimatedCardWithCreditCard from "./AnimatedCardWithCreditCard";
+import CartCard from "./CartCard";
 import CardFormDetails from "./FormContents/CardFormDetails";
 import BuyerFormDetails from "./FormContents/BuyerFormDetails";
 import "./styles.scss";
@@ -31,6 +32,8 @@ export default function App() {
 
   // Line Items in the current checkout Token
   const [lineItems, setLineItems] = useState("");
+
+  const [currentCart, setCurrentCart] = useState();
   // State for different cards
 
   //*****  Credit Card form *****
@@ -84,7 +87,6 @@ export default function App() {
 
   useEffect(() => {
     //whenever checkoutToken is updated, finds current line items
-    console.log(checkoutToken.id);
     if (checkoutToken.line_items !== undefined) {
       let itemsInCart = {};
       checkoutToken.line_items.forEach((item) => {
@@ -95,14 +97,13 @@ export default function App() {
           },
         };
       });
-      console.log(itemsInCart);
       setLineItems(itemsInCart);
     }
   }, [checkoutToken]);
 
   function executeCheckout(checkoutToken) {
     commerce.checkout
-      .getToken(checkoutToken.id, {
+      .capture(checkoutToken.id, {
         line_items: lineItems,
         customer: {
           firstname: buyerFirstName,
@@ -138,7 +139,8 @@ export default function App() {
       .then((response) => {
         // triggers success popup message
         setShowSuccess(true);
-        resetState();
+        resetState("");
+        // You could save responseId to hook here and then pass that via url to response page
         console.log(
           "Great, your checkout was captured successfully! Checkout the response object for receipt info.",
           response
@@ -180,7 +182,7 @@ export default function App() {
       .generateToken("prodRqEv5xOVPoZz4j", { type: "permalink" })
       .then((res) => {
         setCheckoutToken(res);
-        console.log(res);
+        setCurrentCart(res);
       })
       .catch((err) => {
         console.log("Something went wrong with the token generation", err);
@@ -228,7 +230,7 @@ export default function App() {
             onClick={() => setShowSuccess(false)}
             dismissible
           >
-            Success! Thanks for your payment.
+            Success! Your order has been received. Thanks for shopping with us!
           </Alert>
         ) : (
           <div></div>
@@ -248,9 +250,11 @@ export default function App() {
         )}
 
         {/* Form for inputting commerce info */}
+
         <Row>
           <Col md={true}></Col>
           <Col>
+            <CartCard currentCart={currentCart} />
             <AnimatedCardWithCreditCard
               formDetails={CardFormDetails(cardName, cardNum, expDate, cvv)}
               handleChange={handleCardChange}
