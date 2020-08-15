@@ -6,26 +6,23 @@ import FormElement from "./FormElement";
 function AnimatedCard(props) {
   // Animation Value
   const [hovered, setHovered] = useState(false);
-  // sets opacity for checkout box when hovered
-  const hoverOpacity = useSpring({
-    opacity: hovered ? 0.98 : 0.72,
+  // sets animation for checkout box when hovered
+  const hovering = useSpring({
+    transform: hovered
+      ? "translate3d(0px,0,0) scale(1.05) rotateX(0deg)"
+      : "translate3d(0px,0,0) scale(1) rotateX(0deg)",
   });
 
   return (
     <animated.div
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
-      onClick={() => setHovered(true)}
-      style={{ hoverOpacity }}
+      style={hovering}
     >
       <Row>
         <Card as={Col} sm={12} className="rounded">
           <h1 className="text-center mt-4">{props.title}</h1>
-          <Form
-            onSubmit={props.handleSubmit}
-            className="p-4"
-            style={{ opacity: 1 }}
-          >
+          <Form onSubmit={props.handleSubmit} className="p-4">
             <Form.Row>
               {props.formDetails.map((field) => (
                 <FormElement
