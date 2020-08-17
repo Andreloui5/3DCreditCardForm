@@ -1,10 +1,16 @@
 import React from "react";
+import * as THREE from "three";
 
-function BackDrop() {
+function BackDrop({ position, rotation }) {
   return (
-    <mesh receiveShadow position={[0, -1, -25]}>
-      <planeBufferGeometry attach="geometry" args={[500, 500]} />
-      <meshStandardMaterial attach="material" color="white" />
+    <mesh receiveShadow position={position} rotation={rotation}>
+      <planeBufferGeometry attach="geometry" args={[200, 200]} />
+      <meshStandardMaterial
+        side={THREE.DoubleSide}
+        attach="material"
+        color="#2D3047"
+        opacity={0.35}
+      />
     </mesh>
   );
 }

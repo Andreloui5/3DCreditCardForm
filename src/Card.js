@@ -1,5 +1,6 @@
 import React, { useRef, useMemo } from "react";
 import CardText from "./CardText";
+import { useFrame } from "react-three-fiber";
 import * as THREE from "three";
 
 function Card(props) {
@@ -10,6 +11,9 @@ function Card(props) {
     () => new THREE.TextureLoader().load(props.cardType),
     [props.cardType]
   );
+
+  const materials = [texture];
+  useFrame(() => (creditCard.current.rotation.y += 0.002));
 
   return (
     <group ref={creditCard}>

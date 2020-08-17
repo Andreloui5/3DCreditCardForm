@@ -20,7 +20,7 @@ function AnimatedCard(props) {
       style={hovering}
     >
       <Row>
-        <Card as={Col} sm={12} className="rounded">
+        <Card as={Col} sm={12} className="rounded infoCard">
           <h1 className="text-center mt-4">{props.title}</h1>
           <Form onSubmit={props.handleSubmit} className="p-4">
             <Form.Row>
