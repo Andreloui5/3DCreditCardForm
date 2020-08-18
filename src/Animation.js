@@ -27,7 +27,7 @@ export default function Animation(props) {
           shadow-mapSize-height={2048}
           castShadow
         />
-
+        {/* <CardModel /> */}
         <Card
           cardType={props.cardType}
           number={props.cardNum}

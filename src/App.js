@@ -255,7 +255,7 @@ export default function App() {
             onClick={() => setShowFail(false) && setValidationInfo(null)}
             dismissible
           >
-            Your {validationInfo} was invalid. Please try again at a later time.
+            There was a problem with your {validationInfo}. Please try again.
           </Alert>
         ) : (
           <div></div>
