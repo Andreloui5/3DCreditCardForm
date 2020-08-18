@@ -11,6 +11,7 @@ import {
 import AnimatedCard from "./AnimatedCardPure";
 import AnimatedCardWithCreditCard from "./AnimatedCardWithCreditCard";
 import CartCard from "./CartCard";
+import Spinner from "./Spinner";
 import CardFormDetails from "./FormContents/CardFormDetails";
 import BuyerFormDetails from "./FormContents/BuyerFormDetails";
 import "./styles.scss";
@@ -26,16 +27,16 @@ export default function App() {
   // State for popups
   const [showSuccess, setShowSuccess] = useState(false);
   const [showFail, setShowFail] = useState(false);
-
   // State for checkout token
   const [checkoutToken, setCheckoutToken] = useState("");
-
   // Line Items in the current checkout Token
   const [lineItems, setLineItems] = useState("");
-
+  // Cart items to show at top of page
   const [currentCart, setCurrentCart] = useState();
-  // State for different cards
+  // Submission spinner toggle
+  const [spinnerVisible, setSpinnerVisible] = useState(false);
 
+  // State for different cards
   //*****  Credit Card form *****
   // Raw user input
   const [cardState, setCardState] = useState({});
@@ -77,10 +78,11 @@ export default function App() {
     // check the inputs for validity
     if (validateInputs(cardName, cardNum, expDate, cvv)) {
       // sends checkout to Commerce
+      setSpinnerVisible(true);
       executeCheckout(checkoutToken);
-      resetState();
     } else {
       let fail = figureOutErrors(cardName, cardNum, expDate, cvv);
+      window.scrollTo(0, 0);
       setValidationInfo(fail);
       setShowFail(true);
     }
@@ -143,19 +145,23 @@ export default function App() {
       .then((response) => {
         // triggers success popup message
         setShowSuccess(true);
-        resetState("");
+        setCardState("");
+        setCurrentCart("");
+        setSpinnerVisible(false);
+        window.scrollTo(0, 0);
         // You could save responseId to hook here and then pass that via url to response page
         console.log(
           "Great, your checkout was captured successfully! Checkout the response object for receipt info.",
           response
         );
       })
-      .catch((error) => console.error(error));
-  }
-
-  // take this function away and just use setCardState in submit handler
-  function resetState() {
-    setCardState("");
+      .catch((error) => {
+        setValidationInfo("submission");
+        setSpinnerVisible(false);
+        setShowFail(true);
+        window.scrollTo(0, 0);
+        console.log(error);
+      });
   }
 
   // Formats card number into readable chunks
@@ -195,18 +201,28 @@ export default function App() {
 
   // Formats user input and sets individual field states for all forms
   useEffect(() => {
+    // Go back to the ternary way of doing this??????
+
     // each of the following looks for an entry in a field and, if there is one, updates the corresponding hook
-    cardState.cardNum && handleFormChange(cardState.cardNum);
-    cardState.expDate && handleDateChange(cardState.expDate);
-    cardState.cvv && handleCvvChange(cardState.cvv);
-    cardState.cardName && setName(cardState.cardName);
-    cardState.buyerFirstName && setBuyerFirstName(cardState.buyerFirstName);
-    cardState.buyerLastName && setBuyerLastName(cardState.buyerLastName);
-    cardState.email && setEmail(cardState.email);
-    cardState.address && setAddress(cardState.address);
-    cardState.city && setCity(cardState.city);
-    cardState.geoState && setGeoState(cardState.geoState);
-    cardState.zipCode && setZipCode(cardState.zipCode);
+    cardState.cardNum
+      ? handleFormChange(cardState.cardNum)
+      : handleFormChange("");
+    cardState.expDate
+      ? handleDateChange(cardState.expDate)
+      : handleDateChange("");
+    cardState.cvv ? handleCvvChange(cardState.cvv) : handleCvvChange("");
+    cardState.cardName ? setName(cardState.cardName) : setName("");
+    cardState.buyerFirstName
+      ? setBuyerFirstName(cardState.buyerFirstName)
+      : setBuyerFirstName("");
+    cardState.buyerLastName
+      ? setBuyerLastName(cardState.buyerLastName)
+      : setBuyerLastName("");
+    cardState.email ? setEmail(cardState.email) : setEmail("");
+    cardState.address ? setAddress(cardState.address) : setAddress("");
+    cardState.city ? setCity(cardState.city) : setCity("");
+    cardState.geoState ? setGeoState(cardState.geoState) : setGeoState("");
+    cardState.zipCode ? setZipCode(cardState.zipCode) : setZipCode("");
   }, [cardState]);
 
   // sets card type when the card Number changes
@@ -218,6 +234,7 @@ export default function App() {
   return (
     <>
       <Container>
+        <Spinner visible={spinnerVisible} />
         {/* success popup  */}
         {showSuccess ? (
           <Alert
@@ -238,8 +255,7 @@ export default function App() {
             onClick={() => setShowFail(false) && setValidationInfo(null)}
             dismissible
           >
-            There was an error with the {validationInfo} you entered. Please try
-            again, and resubmit.
+            Your {validationInfo} was invalid. Please try again at a later time.
           </Alert>
         ) : (
           <div></div>
@@ -252,7 +268,7 @@ export default function App() {
           <Col>
             <CartCard currentCart={currentCart} />
             <AnimatedCardWithCreditCard
-              formDetails={CardFormDetails(cardName, cardNum, expDate, cvv)}
+              formDetails={CardFormDetails(cardNum, cardName, expDate, cvv)}
               handleChange={handleCardChange}
               handleSubmit={handleSubmit}
               title={"Payment Info"}

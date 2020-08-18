@@ -20,7 +20,7 @@ const BuyerFormDetails = (
     smallColSize: 6,
     value: buyerLastName,
     formLabel: "Last Name",
-    placeholder: "Bob Smith",
+    placeholder: "Smith",
     name: "buyerLastName",
   },
   {
@@ -60,7 +60,7 @@ const BuyerFormDetails = (
     smallColSize: 4,
     value: zipCode,
     formLabel: "Zip Code",
-    placeholder: "90210",
+    placeholder: "10001",
     name: "zipCode",
   },
 ];

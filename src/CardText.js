@@ -4,6 +4,7 @@ import { Text } from "drei";
 function CardText(props) {
   return (
     <Text
+      rotation={props.rotation}
       position={props.position}
       color={"black"}
       fontSize={props.fontSize}

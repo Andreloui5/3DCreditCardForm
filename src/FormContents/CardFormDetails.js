@@ -1,12 +1,4 @@
-const CardFormDetails = (cardName, cardNum, expDate, cvv) => [
-  {
-    controlId: "cardName",
-    smallColSize: 12,
-    value: cardName,
-    formLabel: "Name on Card",
-    placeholder: "Bob Smith",
-    name: "cardName",
-  },
+const CardFormDetails = (cardNum, cardName, expDate, cvv) => [
   {
     controlId: "cardNumber",
     smallColSize: 12,
@@ -14,6 +6,14 @@ const CardFormDetails = (cardName, cardNum, expDate, cvv) => [
     formLabel: "Card Number",
     placeholder: "•••• •••• •••• ••••",
     name: "cardNum",
+  },
+  {
+    controlId: "cardName",
+    smallColSize: 12,
+    value: cardName,
+    formLabel: "Name on Card",
+    placeholder: "Bob Smith",
+    name: "cardName",
   },
   {
     controlId: "expirationDate",
