@@ -28,7 +28,6 @@ function Card(props) {
           expiry={props.expDate}
           cvv={props.cvv}
         />
-
         {/* Magnetic Strip */}
         <mesh receiveShadow position={[0.19, 3.1, 0.73]}>
           <planeBufferGeometry attach="geometry" args={[26.8, 3]} />
