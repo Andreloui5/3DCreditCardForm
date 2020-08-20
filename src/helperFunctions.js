@@ -63,10 +63,7 @@ export function formatCreditCard(value) {
       currentValue = `${cleanValue.slice(0, 4)} ${cleanValue.slice(
         4,
         8
-      )} ${cleanValue.slice(8, 12)} ${cleanValue.slice(
-        12,
-        16
-      )} ${cleanValue.slice(16, 20)}`;
+      )} ${cleanValue.slice(8, 12)} ${cleanValue.slice(12, 16)}`;
       break;
   }
   return currentValue.trim();

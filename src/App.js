@@ -16,6 +16,7 @@ import CardFormDetails from "./FormContents/CardFormDetails";
 import BuyerFormDetails from "./FormContents/BuyerFormDetails";
 import "./styles.scss";
 import Commerce from "@chec/commerce.js";
+import CustomButton from "./CustomButton";
 
 const commerce = new Commerce(
   "pk_test_183505c17b9df667acd2e6f925c4957b715322209303f",
@@ -201,8 +202,6 @@ export default function App() {
 
   // Formats user input and sets individual field states for all forms
   useEffect(() => {
-    // Go back to the ternary way of doing this??????
-
     // each of the following looks for an entry in a field and, if there is one, updates the corresponding hook
     cardState.cardNum
       ? handleFormChange(cardState.cardNum)
@@ -255,7 +254,8 @@ export default function App() {
             onClick={() => setShowFail(false) && setValidationInfo(null)}
             dismissible
           >
-            There was a problem with your {validationInfo}. Please try again.
+            There was a problem with your {validationInfo}. Please ensure your
+            information was entered correctly and try again.
           </Alert>
         ) : (
           <div></div>
@@ -267,17 +267,6 @@ export default function App() {
           <Col md={true}></Col>
           <Col>
             <CartCard currentCart={currentCart} />
-            <AnimatedCardWithCreditCard
-              formDetails={CardFormDetails(cardNum, cardName, expDate, cvv)}
-              handleChange={handleCardChange}
-              handleSubmit={handleSubmit}
-              title={"Payment Info"}
-              cardNum={cardNum}
-              cardName={cardName}
-              expDate={expDate}
-              cvv={cvv}
-              cardType={cardType}
-            />
             <AnimatedCard
               formDetails={BuyerFormDetails(
                 buyerFirstName,
@@ -290,11 +279,20 @@ export default function App() {
               )}
               handleChange={handleCardChange}
               handleSubmit={handleSubmit}
-              title={"Billing Info"}
+              title={"Customer Details"}
             />
-            <Button id="submit" onClick={handleSubmit}>
-              Submit
-            </Button>
+            <AnimatedCardWithCreditCard
+              formDetails={CardFormDetails(cardNum, cardName, expDate, cvv)}
+              handleChange={handleCardChange}
+              handleSubmit={handleSubmit}
+              title={"Payment"}
+              cardNum={cardNum}
+              cardName={cardName}
+              expDate={expDate}
+              cvv={cvv}
+              cardType={cardType}
+            />
+            <CustomButton onSubmit={handleSubmit} text={"Complete Order"} />
           </Col>
           <Col md={true}></Col>
         </Row>

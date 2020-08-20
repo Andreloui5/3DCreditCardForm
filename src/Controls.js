@@ -15,8 +15,6 @@ export default function Controls() {
 
   return (
     <orbitControls
-      // auto-rotates (but is still dragable)
-      // autoRotate
       enablePan={false}
       enableZoom={false}
       ref={orbitRef}

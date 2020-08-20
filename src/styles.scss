@@ -30,10 +30,17 @@ body{
   margin: 30px;
   padding: 15px;
   max-width: 500px;
-  max-height: 700px;
+  max-height: 1000px;
   z-index: 10;
-  background-color: #548687;
+  background-color: #413D44;
   overflow: hidden;
+}
+
+.form-control::-webkit-input-placeholder {
+  opacity: .4;
+}
+.form-label {
+  color: #eae6e5;
 }
 
 .button {
@@ -61,10 +68,9 @@ h1{
   max-width: 500px;
   max-height: 300px;
   z-index: 10;
-
-  background: #548687;
-  box-shadow: inset 20px 20px 60px #477273,
-              inset -20px -20px 60px #619a9b;
+  background: #413D44;
+  box-shadow: inset -20px 20px 60px #37343a,
+            inset 20px -20px 60px #4b464e;
 }
 
 #submit {

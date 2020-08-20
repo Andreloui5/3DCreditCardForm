@@ -18,9 +18,9 @@ export default function Animation(props) {
         }}
       >
         <Controls />
-        <ambientLight intensity={0.8} />
+        <ambientLight intensity={0.35} />
         <spotLight
-          intensity={0.2}
+          intensity={1}
           position={[10, 60, 40]}
           penumbra={1}
           shadow-mapSize-width={2048}
