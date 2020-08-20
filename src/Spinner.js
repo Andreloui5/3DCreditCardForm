@@ -10,7 +10,7 @@ function SubmissionSpinner({ visible }) {
       style={display}
       id="submissionSpinner"
     >
-      <span className="sr-only">Submitting your order...</span>
+      <span className="sr-only">Please wait...</span>
     </Spinner>
   );
 }
