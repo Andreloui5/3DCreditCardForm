@@ -23,15 +23,15 @@ function AnimatedCardWithCreditCard(props) {
       <Row>
         <Card as={Col} sm={12} className="rounded infoCard">
           <h1 className="text-center mt-4">{props.title}</h1>
+          <p className="text-center" style={{ color: "#eae6e5" }}>
+            Interact with the card and watch it respond as you enter numbers
+            beginning with 4, 5, 6, 35, and 37.
+            <span>
+              <br></br>
+            </span>
+            Use 4242 4242 4242 4242 to test payment.
+          </p>
           <Form onSubmit={props.handleSubmit} className="p-4 ">
-            <p className="text-center" style={{ color: "#eae6e5" }}>
-              Watch the animation respond as you enter card numbers beginning
-              with 4, 5, 6, 35, and 37.
-              <span>
-                <br></br>
-              </span>
-              Use 4242 4242 4242 4242 to test payment.
-            </p>
             <Animation
               cardNum={props.cardNum}
               cardName={props.cardName}
