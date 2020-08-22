@@ -6,6 +6,7 @@ import "./styles.scss";
 extend({ OrbitControls });
 
 export default function Controls() {
+  // Imports controls for the animation
   const orbitRef = useRef();
   const { camera, gl } = useThree();
 
@@ -15,6 +16,7 @@ export default function Controls() {
 
   return (
     <orbitControls
+      // disables ability to pan and zoom the camera
       enablePan={false}
       enableZoom={false}
       ref={orbitRef}

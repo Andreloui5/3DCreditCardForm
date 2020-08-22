@@ -7,8 +7,9 @@ import Model from "./Scene";
 import SubmissionSpinner from "./Spinner";
 
 function Card(props) {
+  // this element is the credit card animation
   const creditCard = useRef();
-
+  // card rotates automatically along the y axis
   useFrame(() => (creditCard.current.rotation.y += 0.003));
 
   return (
@@ -28,7 +29,7 @@ function Card(props) {
           expiry={props.expDate}
           cvv={props.cvv}
         />
-        {/* Magnetic Strip */}
+        {/* Magnetic Strip on back of card */}
         <mesh receiveShadow position={[0.19, 3.1, 0.73]}>
           <planeBufferGeometry attach="geometry" args={[26.8, 3]} />
           <meshStandardMaterial

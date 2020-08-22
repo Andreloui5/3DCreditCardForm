@@ -12,31 +12,37 @@ import { useLoader } from "react-three-fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export default function Model(props) {
+  // This renders the model for the credit card, and also loads the appropriate card background as user inputs change
+
+  // loads background image
   const texture = useMemo(
     () => new THREE.TextureLoader().load(props.cardType),
     [props.cardType]
   );
 
   const group = useRef();
+  // loads the card model
   const { nodes, materials } = useLoader(GLTFLoader, "./card/scene.gltf");
-
+  // declares a new material and maps the background image to that material
   const material = new THREE.MeshPhysicalMaterial({ map: texture });
-  //<group position={[1.1, 4.19, 0]} scale={[4.24, 0.63, 4.24]}>
-  //<group position={[-0.26, -6.63, 0]} scale={[0.24, 1.58, 0.24]}></group>
+
   return (
     <group ref={group} {...props} dispose={null}>
       <group rotation={[-Math.PI / 2, 0, 0]} position={[-6.1, -9, 6]}>
+        {/* Back of the card */}
         <mesh
           material={material}
           geometry={nodes.mesh_0.geometry}
           castShadow
           metalness={8}
         />
+        {/* Outer rim of card */}
         <mesh
           material={materials.Card3initialSha}
           geometry={nodes.mesh_1.geometry}
           castShadow
         />
+        {/* Front of Card */}
         <mesh
           material={material}
           geometry={nodes.mesh_2.geometry}

@@ -4,7 +4,7 @@ import { useSpring, animated } from "react-spring";
 import FormElement from "./FormElement";
 import Animation from "./Animation";
 
-function AnimatedCardWithCreditCard(props) {
+function FormCardWithAnimation(props) {
   // Animation Value
   const [hovered, setHovered] = useState(false);
   // sets animation for checkout box when hovered
@@ -32,6 +32,7 @@ function AnimatedCardWithCreditCard(props) {
             Use 4242 4242 4242 4242 to test payment.
           </p>
           <Form onSubmit={props.handleSubmit} className="p-4 ">
+            {/* Renders a canvas and animation to form */}
             <Animation
               cardNum={props.cardNum}
               cardName={props.cardName}
@@ -41,6 +42,7 @@ function AnimatedCardWithCreditCard(props) {
             />
 
             <Form.Row className="mt-3">
+              {/* Iterates through the fields stipulated and renders an input for each */}
               {props.formDetails.map((field) => (
                 <FormElement
                   key={field.controlId}
@@ -61,4 +63,4 @@ function AnimatedCardWithCreditCard(props) {
   );
 }
 
-export default AnimatedCardWithCreditCard;
+export default FormCardWithAnimation;

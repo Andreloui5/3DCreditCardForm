@@ -3,10 +3,10 @@ import { Row, Form, Card, Col } from "react-bootstrap";
 import { useSpring, animated } from "react-spring";
 import FormElement from "./FormElement";
 
-function AnimatedCard(props) {
+function FormCard(props) {
   // Animation Value
   const [hovered, setHovered] = useState(false);
-  // sets animation for checkout box when hovered
+  // sets animation for the form when user hovers over it
   const hovering = useSpring({
     transform: hovered
       ? "translate3d(0px,0,0) scale(1.05) rotateX(0deg)"
@@ -21,9 +21,11 @@ function AnimatedCard(props) {
     >
       <Row>
         <Card as={Col} sm={12} className="rounded infoCard">
+          {/* Card Title */}
           <h1 className="text-center mt-4">{props.title}</h1>
           <Form onSubmit={props.handleSubmit} className="p-4">
             <Form.Row>
+              {/* Iterates through the fields stipulated and renders an input for each */}
               {props.formDetails.map((field) => (
                 <FormElement
                   key={field.controlId}
@@ -44,4 +46,4 @@ function AnimatedCard(props) {
   );
 }
 
-export default AnimatedCard;
+export default FormCard;

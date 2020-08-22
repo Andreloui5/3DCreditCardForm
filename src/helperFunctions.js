@@ -59,6 +59,7 @@ export function formatCreditCard(value) {
         10
       )} ${cleanValue.slice(10, 15)}`;
       break;
+    // sets up formatting for normal cards (into groups of 4 numbers)
     default:
       currentValue = `${cleanValue.slice(0, 4)} ${cleanValue.slice(
         4,

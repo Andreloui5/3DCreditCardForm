@@ -2,9 +2,9 @@ import React from "react";
 import { Canvas } from "react-three-fiber";
 import * as THREE from "three";
 import Controls from "./Controls";
-import "./styles.scss";
 import Card from "./Card";
 import Skybox from "./Skybox";
+import "./styles.scss";
 
 export default function Animation(props) {
   return (
@@ -18,6 +18,7 @@ export default function Animation(props) {
         }}
       >
         <Controls />
+        {/* Lighting */}
         <ambientLight intensity={0.35} />
         <spotLight
           intensity={1}
@@ -27,7 +28,7 @@ export default function Animation(props) {
           shadow-mapSize-height={2048}
           castShadow
         />
-        {/* <CardModel /> */}
+        {/* Animated Card */}
         <Card
           cardType={props.cardType}
           number={props.cardNum}
@@ -35,6 +36,7 @@ export default function Animation(props) {
           expiry={props.expDate}
           cvv={props.cvv}
         />
+        {/* Walls surrounding card */}
         <Skybox />
       </Canvas>
     </div>

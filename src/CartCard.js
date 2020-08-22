@@ -2,8 +2,10 @@ import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 
 function CartCard(props) {
+  // Sets up a 'current cart' for the user (so they know what they're buying
+
   let cart;
-  // if there is a cart, set variable 'cart' to reflect line items
+  // if there is a cart, set variable 'cart' to reflect line items in it
   props.currentCart ? (cart = props.currentCart.line_items) : (cart = []);
 
   return (
@@ -15,6 +17,7 @@ function CartCard(props) {
         Your Order
       </Card.Title>
       <Card.Body>
+        {/* Iterates through items in cart and makes a row for each, displaying the item name and price */}
         {cart.map((item) => (
           <Row key={item.name}>
             <Col>
@@ -28,6 +31,7 @@ function CartCard(props) {
           </Row>
         ))}
         <hr></hr>
+        {/* This displays the total price of all items in a user's cart */}
         <h4 className="text-center m-2">
           Total:{" "}
           {props.currentCart

@@ -3,6 +3,7 @@ import Plane from "./Plane";
 import BackDrop from "./BackDrop";
 
 function Skybox() {
+  //This uses the backdrop and plane elements to create the skybox
   return (
     <>
       <Plane position={[0, -30, 0]} />

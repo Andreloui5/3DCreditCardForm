@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Alert, Button } from "react-bootstrap";
+import { Container, Row, Col, Alert } from "react-bootstrap";
 import {
   validateInputs,
   figureOutErrors,
@@ -8,15 +8,15 @@ import {
   cvvCheck,
   findCardType,
 } from "./helperFunctions";
-import AnimatedCard from "./AnimatedCardPure";
-import AnimatedCardWithCreditCard from "./AnimatedCardWithCreditCard";
+import FormCard from "./FormCard";
+import FormCardWithAnimation from "./FormCardWithAnimation";
 import CartCard from "./CartCard";
 import Spinner from "./Spinner";
 import CardFormDetails from "./FormContents/CardFormDetails";
 import BuyerFormDetails from "./FormContents/BuyerFormDetails";
-import "./styles.scss";
 import Commerce from "@chec/commerce.js";
 import CustomButton from "./CustomButton";
+import "./styles.scss";
 
 const commerce = new Commerce(
   "pk_test_183505c17b9df667acd2e6f925c4957b715322209303f",
@@ -78,19 +78,24 @@ export default function App() {
     event.preventDefault();
     // check the inputs for validity
     if (validateInputs(cardName, cardNum, expDate, cvv)) {
-      // sends checkout to Commerce
+      // enables spinner while the call to Commerce completes
       setSpinnerVisible(true);
+      // sends checkout to Commerce
       executeCheckout(checkoutToken);
     } else {
+      // If something is wrong in form, figure out which field was improperly filled
       let fail = figureOutErrors(cardName, cardNum, expDate, cvv);
+      // scroll to top of page
       window.scrollTo(0, 0);
+      // sets the appropriate variable for the error message display
       setValidationInfo(fail);
+      // shows error message to user
       setShowFail(true);
     }
   };
 
   useEffect(() => {
-    //whenever checkoutToken is updated, finds current line items
+    //whenever checkoutToken is updated, finds current line items and formats them for the checkout object
     if (checkoutToken.line_items !== undefined) {
       let itemsInCart = {};
       checkoutToken.line_items.forEach((item) => {
@@ -146,9 +151,13 @@ export default function App() {
       .then((response) => {
         // triggers success popup message
         setShowSuccess(true);
+        // resets card state (which empties all entry fields)
         setCardState("");
+        // empties the user's 'current cart' at top of page
         setCurrentCart("");
+        // cancels spinner triggered by clicking the "complete order" button.
         setSpinnerVisible(false);
+        // return to top of page
         window.scrollTo(0, 0);
         // You could save responseId to hook here and then pass that via url to response page
         console.log(
@@ -157,9 +166,13 @@ export default function App() {
         );
       })
       .catch((error) => {
+        // sets the variable in the failure user message
         setValidationInfo("submission");
+        // cancels spinner triggered by clicking the "complete order" button.
         setSpinnerVisible(false);
+        // shows error message to user
         setShowFail(true);
+        // scrolls to top of page
         window.scrollTo(0, 0);
         console.log(error);
       });
@@ -168,18 +181,21 @@ export default function App() {
   // Formats card number into readable chunks
   const handleFormChange = (text) => {
     let userCardInput = formatCreditCard(text);
+    //sets state with formatted input
     setCardNum(userCardInput);
   };
 
   // Formats date input
   const handleDateChange = (text) => {
     let userDateInput = dateCheck(text);
+    //sets state with formatted input
     setExpDate(userDateInput);
   };
 
   // Formats CVV input
   const handleCvvChange = (text) => {
     let userCvvInput = cvvCheck(text);
+    //sets state with formatted input
     setCvv(userCvvInput);
   };
 
@@ -224,7 +240,7 @@ export default function App() {
     cardState.zipCode ? setZipCode(cardState.zipCode) : setZipCode("");
   }, [cardState]);
 
-  // sets card type when the card Number changes
+  // sets card type when the card Number changes. This is used to change the animation backgound img
   useEffect(() => {
     const currentCard = findCardType(cardNum);
     setCardType(currentCard);
@@ -247,6 +263,7 @@ export default function App() {
         ) : (
           <div></div>
         )}
+        {/* error popup */}
         {showFail ? (
           <Alert
             className="popup"
@@ -262,12 +279,11 @@ export default function App() {
         )}
 
         {/* Form for inputting commerce info */}
-
         <Row>
           <Col md={true}></Col>
           <Col>
             <CartCard currentCart={currentCart} />
-            <AnimatedCard
+            <FormCard
               formDetails={BuyerFormDetails(
                 buyerFirstName,
                 buyerLastName,
@@ -281,7 +297,7 @@ export default function App() {
               handleSubmit={handleSubmit}
               title={"Customer Details"}
             />
-            <AnimatedCardWithCreditCard
+            <FormCardWithAnimation
               formDetails={CardFormDetails(cardNum, cardName, expDate, cvv)}
               handleChange={handleCardChange}
               handleSubmit={handleSubmit}
