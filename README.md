@@ -2,7 +2,7 @@
 
 This guide shows you how to set up a checkout experience using Commerce.js, React, Three.js, and React-Three-Fiber.
 
-This guide uses the [Commerce.js](https://commercejs.com/) SDK (v2) and is a continuation of a previous guide— [Create a Cart with React and Three.js](https://github.com/Andreloui5/CommerceWithThree-part2)
+This guide uses the [Commerce.js](https://commercejs.com/) SDK (v2) and is a continuation of a previous guide— [Create a Cart with React and Three.js](https://github.com/Andreloui5/CommerceWithThree-part2).
 
 [View the live demo](https://2wx95.csb.app/)
 
