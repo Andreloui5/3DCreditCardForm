@@ -49,12 +49,12 @@ Add a product titled "Vans Shoe" and leave the variants section empty.
 
 Click **Save Changes** at the bottom of the page and open your code editor.
 
-(For the sake of this guide, you will create a checkout with this single product. It is important to note that `Commerce` is immensely customizeable, and it is easy to add products and variants to any store. If you would like to see how multiple products with variants can be handled, check out [this guide](https://github.com/kingmoc/adding-products-cart-cjs-react/blob/master/README.md).)
+(For the sake of this guide, you will create a checkout with this single product. It is important to note that `Commerce` is immensely customizable, and it is easy to add products and variants to any store. If you would like to see how you can handle multiple products with variants, check out [this guide](https://github.com/kingmoc/adding-products-cart-cjs-react/blob/master/README.md).)
 
 
 **2. Setting up your file structure**
 
-In order to keep things as simple as possible, the checkout will be set up as a stand-alone application. It is fairly straightforward to integrate it with the previous guides by using `react-router`. If you would like assistance setting up your routes, [Kingmoc's guide](https://github.com/kingmoc/adding-products-cart-cjs-react/blob/master/README.md) covers routing in detail.
+This guide details a stand-alone checkout application. It is fairly straightforward to integrate it with the previous guides by using `react-router`. If you would like assistance setting up your routes, [Kingmoc's guide](https://github.com/kingmoc/adding-products-cart-cjs-react/blob/master/README.md) covers routing in detail.
 
 For this guide, you will need the following files and folders in your `src` folder.
 ```
@@ -69,9 +69,7 @@ For this guide, you will need the following files and folders in your `src` fold
 |  |--Skybox.js
 |--assets
 |--cardElements
-|  |--Alert.js
 |  |--CartCard.js
-|  |--CustomButton.js
 |  |--FormCard.js
 |  |--FormCardWithAnimation.js
 |  |--FormElement.js
@@ -88,7 +86,7 @@ For this guide, you will need the following files and folders in your `src` fold
 Since this guide is not focused on styling, replace the content in your styles.css folder with the following code:
 
 <details>
-<summary>Click to show css</summary>
+<summary>Click to show style.css</summary>
 
 ```css
 /* style.css */
@@ -210,6 +208,8 @@ Navigate to `App.js`. Since a checkout requires handling quite a bit of informat
 
   - State for your `checkoutToken` from `Commerce`
   ```js
+  //App.js
+
   // The checkout token itself
   const [checkoutToken, setCheckoutToken] = useState("");
   // Line Items in the current checkout Token
@@ -236,16 +236,12 @@ Navigate to `App.js`. Since a checkout requires handling quite a bit of informat
   const [geoState, setGeoState] = useState("");
   const [zipCode, setZipCode] = useState("");
   ```
-  - You will also want to have a few hooks to handle some user validations
+  - You will also want to have a few hooks to handle user validations
   ```js
   const [validationInfo, setValidationInfo] = useState(null);
   // State for popups
   const [showSuccess, setShowSuccess] = useState(false);
   const [showFail, setShowFail] = useState(false);
-  // State for checkout token
-  const [checkoutToken, setCheckoutToken] = useState("");
-  // Line Items in the current checkout Token
-  const [lineItems, setLineItems] = useState("");
   // Cart items to show at top of page
   const [currentCart, setCurrentCart] = useState();
   // Submission spinner toggle
@@ -257,6 +253,8 @@ Navigate to `App.js`. Since a checkout requires handling quite a bit of informat
 In order to make your components reusable (and able to handle any user input you might desire), set up a generic state handler.
 
 ```js
+ //App.js
+
 const handleCardChange = (evt) => {
     const value = evt.target.value;
     setCardState({
@@ -265,10 +263,12 @@ const handleCardChange = (evt) => {
     });
   };
 ```
-This handler takes advantage of the `cardState` hook to make a new key/value pair for any new input, while also updating the value for any previously created pairing.
+This handler takes advantage of the cardState hook to make a new key/value pair for any new input and also updates the value for any previously created pairing.
 
 Now make a few functions that will allow you to format and validate user inputs (you will create the helper functions a little further along in this guide).
 ```js
+ //App.js
+
   const handleFormChange = (text) => {
     let userCardInput = formatCreditCard(text);
     //sets card number hook with formatted/validated input
@@ -288,9 +288,11 @@ Now make a few functions that will allow you to format and validate user inputs 
   };
 ```
 
-The last handler you will need to make is a submission handler. Upon submission, this function will check for valid inputs, excecute the checkout, and returns success or error messages.
+The last handler you will need to make is a submission handler. Upon submission, this function will check for valid inputs, execute the checkout, and return success or error messages.
 
 ```js
+ //App.js
+
 const handleSubmit = (event) => {
     // checks for blank fields, etc. in bootstrap form
     const form = event.currentTarget;
@@ -322,7 +324,7 @@ const handleSubmit = (event) => {
 
 In order to handle all of the data needed for a checkout, you will be using several `useEffect()` hooks to keep track of the different lifecycle events this page will experience.
 
-In order to initialize a checkout, you will need to make a call to `Commerce` and generate a checkout token. To do this, import `Commerce` and create a variable with your sandbox public key. Put it directly under the import section of `App.js`. (If needed, you can find your key in the [Developer section](https://dashboard.chec.io/setup/developer) of Chec Dashboard's 'Setup' tab).
+To initialize a checkout, you will need to make a call to `Commerce` and generate a checkout token. To do this, import `Commerce` and create a variable with your sandbox public key. Put it directly under the import section of `App.js`. (If needed, you can find your key in the [Developer section](https://dashboard.chec.io/setup/developer) of Chec Dashboard's 'Setup' tab).
 
 ```js
 //App.js
@@ -333,8 +335,10 @@ const commerce = new Commerce(
 );
 ```
 
-Now take advantage of `useEffect()` to generate a checkout token on pageload. For the sake of simplicity, this tutorial is using a permalink that references a single product. If needed, you can find the permalink to your product in the `Options` section of the Chec Product [dashboard](https://dashboard.chec.io/).
+Now take advantage of `useEffect()` to generate a checkout token on page load. For the sake of simplicity, this tutorial is using a permalink that references a single product. If needed, you can find the permalink to your product in the `Options` section of Chec's [Product Dashboard](https://dashboard.chec.io/).
 ```js
+ //App.js
+
   useEffect(() => {
     commerce.checkout
       .generateToken("YOUR PRODUCT PERMALINK GOES HERE", { type: "permalink" })
@@ -356,9 +360,11 @@ commerce.checkout.generateToken(cartId, { type: "cart" })
 
 It is also worth noting that, if needed, you can retrieve a previously generated token from `Commerce` in much the same manner as generating a new one. You would simply exchange the `generateToken()` method with `getToken()`.
 
-Now create a function that will handle the checkout once the user clicks the `Complete Order` button. Again, this guide presents a streamlined checkout experience. `Commerce` has many additional options available that are not reflected in the basic checkout below. To see an example of all the options that are available during a checkout experience, see [Chec's documentation](https://commercejs.com/docs/api/#generate-token).
+Now create a function that will handle the checkout once the user clicks the `Complete Order` button. Again, this guide presents a streamlined checkout experience. `Commerce` has many additional options available that are not reflected in the basic checkout below. To see an example of all the options available during a checkout experience, see [Chec's documentation](https://commercejs.com/docs/api/#generate-token).
 
 ```js
+ //App.js
+
  function executeCheckout(checkoutToken) {
     commerce.checkout
       .capture(checkoutToken.id, {
@@ -432,6 +438,8 @@ Now create a function that will handle the checkout once the user clicks the `Co
 Now that you have created a function to handle the checkout, set up a hook that will capture the line items in a user's cart when a checkout token is generated and format them for use in the `executeCheckout()` function you just created.
 
 ```js
+ //App.js
+
 useEffect(() => {
     //whenever checkoutToken is updated, finds current line items and formats them for the checkout object
     if (checkoutToken.line_items !== undefined) {
@@ -449,9 +457,11 @@ useEffect(() => {
   }, [checkoutToken]);
 ```
 
-A cart is not all that you will need for a checkout, however. You also need to handle user inputs. To do this, set up a `useEffect` hook that watches for changes in `cardState`. This will handle user inputs (and make them more readible and accessible later).  You can use ternary operators to break out all potential user inputs into their own hooks, if they are truthy.
+A cart is not all that you will need for a checkout, however. You also need to handle user inputs. To do this, set up a `useEffect` hook that watches for changes in `cardState`. This handles user inputs (and make them more readible and accessible later). You can also use ternary operators to separate user inputs into individual hooks if they are truthy.
 
 ```js
+ //App.js
+
   useEffect(() => {
     // each of the following looks for an entry in a field and, if there is one, updates the corresponding hook
     cardState.cardNum
@@ -478,6 +488,8 @@ A cart is not all that you will need for a checkout, however. You also need to h
 
 Now, in order for your animation to change when the user types in different credit card numbers, you need to create a listener for the `cardNum` hook.
 ```js
+ //App.js
+
   // sets card type when the card Number changes. This is used to change the animation backgound img
   useEffect(() => {
     const currentCard = findCardType(cardNum);
@@ -682,13 +694,15 @@ export default function App() {
 </details>
 
 
-**6.Writing Helper Functions**
+**6. Writing Helper Functions**
 
 Before adding more to `App.js`, turn your attention to `helperFunctions.js`. Here, create some exported functions that will validate a user's inputs.
 
-First, you should create a function that checks if a user's card number, cvv, and experation date are valid.
+First, you should create a function that checks if a user's card number, cvv, and expiration date are valid.
 
 ```js
+//helperFunctions.js
+
 import valid from "card-validator";
 export function validateInputs(name, number, date, cvv) {
   // check for a (potentially) valid credit card number
@@ -708,6 +722,8 @@ export function validateInputs(name, number, date, cvv) {
 
 Then make a function that will return a string, indicating which input was invalid. (You will later integrate this with an alert which uses the returned value in a template literal, and displays it to the user).
 ```js
+//helperFunctions.js
+
 export function figureOutErrors(name, number, date, cvv) {
   if (typeof name !== "string") {
     return "name";
@@ -724,9 +740,11 @@ export function figureOutErrors(name, number, date, cvv) {
 }
 ```
 
-It is also important to control user inputs for security reasons. You can use regex to control what characters a user is allowed to type in a given field. The following functions will limit which characters a user is allowed to use, and then will format their inputs properly (so that they look standard on the page).
+It is also important to control user inputs for security reasons. You can use regex to control what characters a user is allowed to type in a given field. The following functions limit which characters a user is allowed to use andformat their inputs properly (so that they look standard on the page).
 
 ```js
+//helperFunctions.js
+
 // sanitizes card input
 function cleanInput(value) {
   return value.replace(/\D+/g, "");
@@ -785,11 +803,13 @@ export function cvvCheck(text) {
 }
 ```
 
-**7.Creating a Reusable Card**
+**7. Creating a Reusable Card**
 
-Since there are many different pieces of information you may wish to collect during a checkout process, it is good to create a reusable component to collect that data. In this case, navigate to `FormElement.js`. This reusable component will become the basic building block of your other components. It takes in information via props and returns a single, text input field.
+Since there are many different pieces of information you may wish to collect during a checkout process, it is good to create a reusable component to collect that data. In this case, navigate to `FormElement.js`. This reusable component takes in information via props and returns a single text input field.
 
 ```js
+//FormElement.js
+
 import React from "react";
 import { Form, Col } from "react-bootstrap";
 
@@ -815,6 +835,8 @@ export default FormElement;
 Now move to `FormCard.js`. Here, make a component that will create a bootstrapped card with multiple input fields (created with the `FormElement` component).
 
 ```js
+//FormCard.js
+
 import React, { useState } from "react";
 import { Row, Form, Card, Col } from "react-bootstrap";
 import FormElement from "./FormElement";
@@ -867,6 +889,8 @@ const hovering = useSpring({
 ```
 To hook it all together, wrap your card in an `animated.div` that toggles the hovered state and sets the style to represent your previously declared values. Once you've done this, `FormCard.js` should look something like:
 ```js
+//FormCard.js
+
 import React, { useState } from "react";
 import { Row, Form, Card, Col } from "react-bootstrap";
 import { useSpring, animated } from "react-spring";
@@ -919,12 +943,14 @@ export default FormCard;
 
 ```
 
-As you can see above, mapping through `props.formDetails` creates each text field. Create those detials now by navigating to your `FormContents` folder. Once there, create a file called `BuyerFormDetails`. This file only needs to hold a single, exported function. This function takes in variables (which will be supplied by the user) and returns the information needed to create a bootstrapped card.
+As you can see above, mapping through `props.formDetails` creates each text field. Create those details now by navigating to your `FormContents` folder. Once there, create a file called `BuyerFormDetails`. This file only needs to hold a single, exported function. This function takes in variables (which will be supplied by the user) and returns the information needed to create a bootstrapped card.
 
 <details>
-<summary>Click to see `BuyerFormDetails.js`</summary>
+<summary>Click to see BuyerFormDetails.js</summary>
 
 ```js
+//BuyerFormDetails.js
+
 const BuyerFormDetails = (
   buyerFirstName,
   buyerLastName,
@@ -999,9 +1025,11 @@ export default BuyerFormDetails;
 While you are here, go ahead and create a second file in the `FormContents` folder entitled `CardFormDetails.js`. It will contain the needed information for the credit card form.
 
 <details>
-<summary>Click to see `CardFormDetails.js`</summary>
+<summary>Click to see CardFormDetails.js</summary>
 
 ```js
+//CardFormDetails.js
+
 const CardFormDetails = (cardNum, cardName, expDate, cvv) => [
   {
     controlId: "cardNumber",
@@ -1042,51 +1070,29 @@ export default CardFormDetails;
 ```
 </details>
 
-You will also need a submission button for your cards. Create one now in `CustomButton.js`. For the sake of uniformity, animate your button using the same animation you already created.
+You will also need a submission button for your cards. Create one now in `App.js`.
 ```js
-import React, { useState } from "react";
-import { useSpring, animated } from "react-spring";
-import { Row, Col, Button } from "react-bootstrap";
+//App.js
 
-function CustomButton(props) {
-  const [hovered, setHovered] = useState(false);
-  const hovering = useSpring({
-    transform: hovered
-      ? "translate3d(0px,0,0) scale(1.05) rotateX(0deg)"
-      : "translate3d(0px,0,0) scale(1) rotateX(0deg)",
-  });
-
-  return (
-    <Row>
-      <Col>
-        <animated.div
-          onPointerOver={() => setHovered(true)}
-          onPointerOut={() => setHovered(false)}
-          style={hovering}
-          // centers and adds margin to bottom of element
-          className="text-center mb-3"
-        >
-          <Button
-            id="submit"
-            variant="dark"
-            onClick={props.handleSubmit}
-            className="infoCard"
-          >
-            {props.text}
-          </Button>
-        </animated.div>
-      </Col>
-    </Row>
-  );
-}
-
-export default CustomButton;
-
+<Row>
+  <Col className={"text-center mb-3"}>
+    <Button
+      onClick={handleSubmit}
+      className="infoCard"
+      id="submit"
+      variant="dark"
+    >
+      Complete Order
+    </Button>
+  </Col>
+</Row>
 ```
 
-At this point, navigate to `CartCard.js` and create a bootstrapped `Card` that will take in the user's current cart details and display them. For this guide, the display can be fairly simple— just line items, their prices, and the total price. If you would like to explore some of the other cart data that `Commerce.js` makes available, check out their [documentation](https://commercejs.com/docs/api/#retrieve-a-cart)
+At this point, navigate to `CartCard.js` and create a bootstrapped `Card` that takes in the user's current cart details and displays them. For this guide, the display can be fairly simple— just line items, individual prices, and the total price. If you would like to explore some of the other cart data that `Commerce.js` makes available, check out their [documentation](https://commercejs.com/docs/api/#retrieve-a-cart)
 
 ```js
+//CartCard.js
+
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 
@@ -1139,6 +1145,8 @@ export default CartCard;
 Now return to `App.js`. Earlier, your component currently does not return anything other than an empty fragment. Place the following code into your file (and make sure to import the needed elements).
 
 ```js
+//App.js
+
 return(
   <Container>
     <Row>
@@ -1173,6 +1181,8 @@ return(
 Click here to see what `App.js` looks like at this point.</summary>
 
 ```js
+//App.js
+
 import React, { useEffect, useState } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 import {
@@ -1440,6 +1450,8 @@ Next, turn your attention to the animation folder. Set up `Animation.js` the sam
 
 
 ```js
+//Animation.js
+
 import React from "react";
 import { Canvas } from "react-three-fiber";
 import * as THREE from "three";
@@ -1473,9 +1485,10 @@ export default function Animation(props) {
 
 ```
 
-Next, navigate to `Scene.js` and import the model that you will use as the main object in this scene. This guide uses a [credit card model from sketchfab](https://sketchfab.com/models/130ec74a08b2445c91aae106d738d01e). Just as you did in the [last guide](https://github.com/Andreloui5/CommerceWithThree-part2), use `gltfjsx` to create editable, declarative models (just a reminder: you will need to add the gltf file and textures folder to your `public` folder). By changing the values of a mesh's `material` property, you can make the credit card look however you wish. This guide will be using .png files to replicate different credit cards. You can find these files [here](https://github.com/Andreloui5/3DCreditCardForm/tree/master/src/assets/Cards), if needed.
+Next, navigate to `Scene.js` and import the model that you will use as the main object in this scene. This guide uses a [credit card model from sketchfab](https://sketchfab.com/models/130ec74a08b2445c91aae106d738d01e). Just as you did in the [last guide](https://github.com/Andreloui5/CommerceWithThree-part2), use `gltfjsx` to create editable, declarative models (just a reminder: you will need to add the gltf file and textures folder to your `public` folder). By changing the values of a mesh's `material` property, you can make the credit card look however you wish. This guide will be using .png files to replicate different credit cards. If needed, you can find the files this guide uses [here](https://github.com/Andreloui5/3DCreditCardForm/tree/master/src/assets/Cards).
 
 ```js
+//Scene.js
 
 import * as THREE from "three";
 import React, { useRef, useMemo } from "react";
@@ -1526,9 +1539,11 @@ export default function Model(props) {
 }
 ```
 
-To make your credit card come alive even more, you will need to be able to handle text. To do this, open `CardText.js`. Import `Text` from `drei` and declare the following functional component. Note that the component takes in rotation, position, font size, and text content via props.
+To make your credit card come alive even more, you will need to handle text within your animation. To do this, open `CardText.js`. Import `Text` from `drei` and declare the following functional component. Note that the component takes in rotation, position, font size, and text content via props.
 
 ```js
+//CardText.js
+
 import React from "react";
 import { Text } from "drei";
 
@@ -1551,11 +1566,13 @@ function CardText(props) {
 export default CardText;
 ```
 
-You now have all the elements you need to make up the card object in your animation. To put everything together, turn your attention to `Card.js`. Take advantage of React's `useRef()` hook to make your card rotate on the page, and wrap all of your elements in a `<group>`. This ensures that the card, text, and magnetic strip will act as a single unit and not disparate elements.
+You now have all the elements you need to make up the card object in your animation. To put everything together, turn your attention to `Card.js`. Take advantage of React's `useRef()` hook to make your card rotate on the page, and wrap all of your elements in a `<group>`. Grouping ensures that the card, text, and magnetic strip will act as a single unit and not disparate elements.
 
-It's also a important to wrap the group in a `<Suspense>` element. By doing this, you ensure that the page will render and display a fallback, even if something happens to your animation. For the sake of this guide, import `Suspense` from react and use ```fallback={null}```.
+It's also important to wrap the group in a `<Suspense>` element. By doing this, you ensure that the page will render and display a fallback, even if something happens to your animation. For the sake of this guide, import `Suspense` from react and use ```fallback={null}```.
 
 ```js
+//Card.js
+
 import React, { useRef, Suspense } from "react";
 import CardText from "./CardText";
 import { useFrame } from "react-three-fiber";
@@ -1618,9 +1635,11 @@ export default Card;
 
 ```
 
-To make your card appear in the scene, navigate back to `Animation.js`, import `Card` and add the following code underneath the `<spotLight />` element:
+To make your card appear in the scene, navigate back to `Animation.js`, import `Card`, and add the following code underneath the `<spotLight />` element:
 
 ```js
+//Animation.js
+
 <Card
   cardType={props.cardType}
   number={props.cardNum}
@@ -1630,9 +1649,11 @@ To make your card appear in the scene, navigate back to `Animation.js`, import `
 />
 ```
 
-Now is also a good time to add controls to your animation. In `Controls.js` create the following functional component.
+Now is a good time to add controls to your animation. In `Controls.js` create the following functional component.
 
 ```js
+//Controls.js
+
 import React, { useRef } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { extend, useThree, useFrame } from "react-three-fiber";
@@ -1663,9 +1684,11 @@ export default function Controls() {
 ```
 Now add `<Controls />` to `Animation.js`.
 
-To give the animation some depth, you can create a box around the card so that it looks like it is rotating within a small room. Start by creating a plane in `BackDrop.js`. Make sure to declare `THREE.DoubleSide` in your mesh. This ensures that the plane is visible from both sides, which will be very important when you reposition these planes into a box.
+To give the animation some depth, you can create a box around the card so that it looks like it is rotating within a small room. Start by creating a plane in `BackDrop.js`. Make sure to declare `THREE.DoubleSide` in your mesh. This declaration ensures that the plane is visible from both sides, which will be very important when you reposition these planes into a box.
 
 ```js
+//BackDrop.js
+
 import React from "react";
 import * as THREE from "three";
 
@@ -1687,9 +1710,11 @@ function BackDrop({ position, rotation, opacity }) {
 export default BackDrop;
 ```
 
-Now, navigate to `Skybox.js` and return a fragment with six instances of `BackDrop`, positioned and rotated so that they make a box.
+Now, navigate to `Skybox.js` and return a fragment with six instances of `BackDrop`, positioned and rotated to make a box.
 
 ```js
+//Skybox.js
+
 import React from "react";
 import BackDrop from "./BackDrop";
 
@@ -1735,6 +1760,7 @@ All together, `Animation.js` should look something like this:
 ```js
 
 // Animation.js
+
 import React from "react";
 import { Canvas } from "react-three-fiber";
 import * as THREE from "three";
@@ -1786,7 +1812,7 @@ export default function Animation(props) {
 
 **9. Create a Form with Animation**
 
-Now that `Animation.js` is built out, you can combine it with an input form. Start by copying the code from `FormCard.js` into `FormCardWithAnimation.js` and then add `<Animation />` to the `<Form />`. (Be sure to pass the needed information into `<Animation />` via props.) You can also add some instructions for the user, so that they know how to interact with your card.
+Now that you have built out `Animation.js`, you can combine it with an input form. Start by copying the code from `FormCard.js` into `FormCardWithAnimation.js` and then add `<Animation />` to the `<Form />`. (Be sure to pass the needed information into `<Animation />` via props.) You can also add some instructions for the user, so they know how to best interact with your card.
 
 All told, your file should look something like this:
 
@@ -1794,6 +1820,8 @@ All told, your file should look something like this:
 <summary>Click to see `FormCardWithAnimation.js`</summary>
 
 ```js
+//FormCardWithAnimation.js
+
 import React, { useState } from "react";
 import { Row, Form, Card, Col } from "react-bootstrap";
 import { useSpring, animated } from "react-spring";
@@ -1865,9 +1893,11 @@ export default FormCardWithAnimation;
 
 </details>
 
-Since you created `CardFormDetails.js` ealier, simply import `FormCardWithAnimation` in `App.js` and place the following code under `<FormCard />`.
+Since you created `CardFormDetails.js` earlier, simply import `FormCardWithAnimation` in `App.js` and place the following code under `<FormCard />`.
 
 ```js
+//App.js
+
 <FormCardWithAnimation
   formDetails={CardFormDetails(cardNum, cardName, expDate, cvv)}
   handleChange={handleCardChange}
@@ -1881,11 +1911,13 @@ Since you created `CardFormDetails.js` ealier, simply import `FormCardWithAnimat
 />
 ```
 
-**10.Making your Animated Card Dynamic**
+**10. Making your Animated Card Dynamic**
 
-In order for your animation to change as the user inputs their credit card number, you will need one additional helper function. In `helperFunctions.js`, import the .png files you will be mapping to your animated card (the files used in this guide can be found [here](https://github.com/Andreloui5/3DCreditCardForm/tree/master/src/assets/Cards)). Then add the following function, which will take in a user's card number and return a string representing the user's card type.
+To make your animation change as the user inputs their information, you will need one additional helper function. In `helperFunctions.js`, import the .png files you will be mapping to your animated card (the files used in this guide can be found [here](https://github.com/Andreloui5/3DCreditCardForm/tree/master/src/assets/Cards)). Then add the following function, which will take in a user's card number and return a string representing the user's card type.
 
 ```js
+//helperFunctions.js
+
 export function findCardType(number) {
   const firstNumber = number.toString().charAt(0);
   const secondNumber = number.toString().slice(1, 2);
@@ -1918,7 +1950,7 @@ export function findCardType(number) {
 }
 
 ```
-Once you have made the function, return to `App.js` and import the function.
+Now return to `App.js` and import the function.
 
 **11. Alerts**
 
@@ -1928,6 +1960,7 @@ A bootstrapped alert is a great way to do this. Start by importing `Alert` from 
 
 ```js
 //App.js
+
 {/* success popup  */}
 {showSuccess ? (
   <Alert
