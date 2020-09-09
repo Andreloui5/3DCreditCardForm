@@ -2,9 +2,7 @@ import React, { useRef, Suspense } from "react";
 import CardText from "./CardText";
 import { useFrame } from "react-three-fiber";
 import * as THREE from "three";
-import { HTML } from "drei";
 import Model from "./Scene";
-import SubmissionSpinner from "./Spinner";
 
 function Card(props) {
   // this element is the credit card animation
@@ -13,13 +11,7 @@ function Card(props) {
   useFrame(() => (creditCard.current.rotation.y += 0.003));
 
   return (
-    <Suspense
-      fallback={
-        <HTML>
-          <SubmissionSpinner />
-        </HTML>
-      }
-    >
+    <Suspense fallback={null}>
       <group ref={creditCard}>
         {/* Card itself */}
         <Model

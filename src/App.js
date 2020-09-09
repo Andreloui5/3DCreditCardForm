@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Alert } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import {
   validateInputs,
   figureOutErrors,
@@ -8,14 +8,15 @@ import {
   cvvCheck,
   findCardType,
 } from "./helperFunctions";
-import FormCard from "./FormCard";
-import FormCardWithAnimation from "./FormCardWithAnimation";
-import CartCard from "./CartCard";
-import Spinner from "./Spinner";
+import FormCard from "./CardElements/FormCard";
+import FormCardWithAnimation from "./CardElements/FormCardWithAnimation";
+import CartCard from "./CardElements/CartCard";
+import SubmissionSpinner from "./CardElements/Spinner";
 import CardFormDetails from "./FormContents/CardFormDetails";
 import BuyerFormDetails from "./FormContents/BuyerFormDetails";
 import Commerce from "@chec/commerce.js";
-import CustomButton from "./CustomButton";
+import CustomButton from "./CardElements/CustomButton";
+import Alert from "./CardElements/Alert";
 import "./styles.scss";
 
 const commerce = new Commerce(
@@ -249,7 +250,7 @@ export default function App() {
   return (
     <>
       <Container>
-        <Spinner visible={spinnerVisible} />
+        <SubmissionSpinner visible={spinnerVisible} />
         {/* success popup  */}
         {showSuccess ? (
           <Alert

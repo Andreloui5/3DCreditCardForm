@@ -4,7 +4,7 @@ import * as THREE from "three";
 import Controls from "./Controls";
 import Card from "./Card";
 import Skybox from "./Skybox";
-import "./styles.scss";
+import "../styles.scss";
 
 export default function Animation(props) {
   return (

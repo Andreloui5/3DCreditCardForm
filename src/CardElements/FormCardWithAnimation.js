@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Row, Form, Card, Col } from "react-bootstrap";
 import { useSpring, animated } from "react-spring";
 import FormElement from "./FormElement";
-import Animation from "./Animation";
+import Animation from "../Animation/Animation";
 
 function FormCardWithAnimation(props) {
   // Animation Value

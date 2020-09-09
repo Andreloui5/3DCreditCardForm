@@ -1,7 +1,7 @@
 import React from "react";
 import * as THREE from "three";
 
-function BackDrop({ position, rotation }) {
+function BackDrop({ position, rotation, opacity }) {
   // this element is one wall (used to make up the sides of the skybox background)
   return (
     <mesh receiveShadow position={position} rotation={rotation}>
@@ -10,7 +10,7 @@ function BackDrop({ position, rotation }) {
         side={THREE.DoubleSide}
         attach="material"
         color="#eeeeee"
-        opacity={0.35}
+        opacity={opacity}
       />
     </mesh>
   );
