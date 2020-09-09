@@ -1956,7 +1956,38 @@ Now return to `App.js` and import the function.
 
 The last thing you will need for a fully functional checkout experience is a way to provide feedback to your customer.
 
-A bootstrapped alert is a great way to do this. Start by importing `Alert` from "react-bootstrap". Then, directly underneath the `<Container>` element in `App.js`, use the `setShowSuccess` and `setShowFail` hooks you set up earlier to make your alerts render conditionally.
+Navigate to `Spinner.js` and create a bootstrapped `<Spinner>`.
+```js
+//Spinner.js
+import React from "react";
+import { Spinner } from "react-bootstrap";
+
+function SubmissionSpinner({ visible }) {
+  // The spinner to be shown only after a user clicks "complete order".
+  const display = visible ? { zIndex: 100 } : { display: "none" };
+  return (
+    <Spinner
+      animation="border"
+      role="status"
+      style={display}
+      id="submissionSpinner"
+    >
+      <span className="sr-only">Please wait...</span>
+    </Spinner>
+  );
+}
+
+export default SubmissionSpinner;
+```
+
+Return to `App.js`, import your new component, and then the following code directly underneath the `<Container>` element.
+```js
+//App.js
+
+<SubmissionSpinner visible={spinnerVisible} />
+```
+
+Another important way to provide feedback to your user is through the use of popup alerts. To make one, begin by importing `Alert` from "react-bootstrap". Then, directly underneath the `<Container>` element in `App.js`, use the `setShowSuccess` and `setShowFail` hooks you set up earlier to make your alerts render conditionally.
 
 ```js
 //App.js
@@ -1990,6 +2021,8 @@ A bootstrapped alert is a great way to do this. Start by importing `Alert` from 
 )}
 
 ```
+
+
 **12. That's it!**
 
 You should have an application that uses `Commerce.js` to manage a user's checkout experience and a `Three.js` credit card that reflects a user's inputs as they type.
