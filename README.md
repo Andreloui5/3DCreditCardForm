@@ -4,9 +4,9 @@ This guide shows you how to set up a checkout experience using Commerce.js, Reac
 
 This guide uses the [Commerce.js](https://commercejs.com/) SDK (v2) and is a continuation of a previous guide— [Create a Cart with React and Three.js](https://github.com/Andreloui5/CommerceWithThree-part2)
 
-[View the live demo](https://xg2wo.csb.app/)
+[View the live demo](https://2wx95.csb.app/)
 
-<!-- ![Cart example](public/assets/Cart.gif) -->
+![Checkout example](public/assets/Checkout.gif)
 
 ## Overview
 
@@ -42,8 +42,6 @@ npm i card-validator
 **1. Uploading Products**
 
 If you have completed the previous guide, feel free to skip this section. If you have not, start by creating a [Chec](https://authorize.chec.io/signup) account. Once you have logged in, navigate to **Products**.
-
-![Chec Products Tab](public/assets/Products.png)
 
 Add a product titled "Vans Shoe" and leave the variants section empty.
 
