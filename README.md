@@ -88,6 +88,7 @@ Since this guide is not focused on styling, replace the content in your styles.c
 
 ```css
 /* style.css */
+
 html,
 body,
 #root,
@@ -200,13 +201,13 @@ h4{
 ```
 </details>
 
-**4. `useState()` Hooks for your Checkout**
+**4. `useState()` hooks for your Checkout**
 
-Navigate to `App.js`. Since a checkout requires handling quite a bit of information, a good deal of this file will be dedicated to logic. In the previous guides, you used React's `useEffect()` hook to fetch data from `commerce` and the `useState()` hook to manage the state of `products`. This guide will continue to use hooks to manage state. Import `useEffect` and `useState` from "react" and then declare the following:
+Navigate to `App.js`. Since a checkout requires handling of quite a bit of information, a good deal of this file will be dedicated to logic. In the previous guides, you used React's `useEffect()` hook to fetch data from `commerce` and the `useState()` hook to manage the state of `products`. This guide will continue to use hooks to manage state. Import `useEffect` and `useState` from "react" and then declare the following:
 
   - State for your `checkoutToken` from `Commerce`
   ```js
-  //App.js
+  // App.js
 
   // The checkout token itself
   const [checkoutToken, setCheckoutToken] = useState("");
@@ -251,251 +252,250 @@ Navigate to `App.js`. Since a checkout requires handling quite a bit of informat
 In order to make your components reusable (and able to handle any user input you might desire), set up a generic state handler.
 
 ```js
- //App.js
+// App.js
 
 const handleCardChange = (evt) => {
-    const value = evt.target.value;
-    setCardState({
-      ...cardState,
-      [evt.target.name]: value,
-    });
-  };
+  const value = evt.target.value;
+  setCardState({
+    ...cardState,
+    [evt.target.name]: value,
+  });
+};
 ```
-This handler takes advantage of the cardState hook to make a new key/value pair for any new input and also updates the value for any previously created pairing.
+This handler takes advantage of the `cardState` hook to make a new key/value pair for any new input and also updates the value for any previously created pairing.
 
 Now make a few functions that will allow you to format and validate user inputs (you will create the helper functions a little further along in this guide).
 ```js
- //App.js
+// App.js
 
-  const handleFormChange = (text) => {
-    let userCardInput = formatCreditCard(text);
-    //sets card number hook with formatted/validated input
-    setCardNum(userCardInput);
-  };
+const handleFormChange = (text) => {
+  let userCardInput = formatCreditCard(text);
+  //sets card number hook with formatted/validated input
+  setCardNum(userCardInput);
+};
 
-  const handleDateChange = (text) => {
-    let userDateInput = dateCheck(text);
-    //sets expiration date hook with formatted/validated input
-    setExpDate(userDateInput);
-  };
+const handleDateChange = (text) => {
+  let userDateInput = dateCheck(text);
+  //sets expiration date hook with formatted/validated input
+  setExpDate(userDateInput);
+};
 
-  const handleCvvChange = (text) => {
-    let userCvvInput = cvvCheck(text);
-    //sets cvv hook with formatted/validated input
-    setCvv(userCvvInput);
-  };
+const handleCvvChange = (text) => {
+  let userCvvInput = cvvCheck(text);
+  //sets cvv hook with formatted/validated input
+  setCvv(userCvvInput);
+};
 ```
 
 The last handler you will need to make is a submission handler. Upon submission, this function will check for valid inputs, execute the checkout, and return success or error messages.
 
 ```js
- //App.js
+// App.js
 
 const handleSubmit = (event) => {
-    // checks for blank fields, etc. in bootstrap form
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+  // checks for blank fields, etc. in a Bootstrap form
+  const form = event.currentTarget;
+  if (form.checkValidity() === false) {
     event.preventDefault();
-    // check the inputs for validity
-    if (validateInputs(cardName, cardNum, expDate, cvv)) {
-      // enables spinner while the call to Commerce completes
-      setSpinnerVisible(true);
-      // sends checkout to Commerce
-      executeCheckout(checkoutToken);
-    } else {
-      // If something is wrong in form, figure out which field was improperly filled
-      let fail = figureOutErrors(cardName, cardNum, expDate, cvv);
-      // scroll to top of page
-      window.scrollTo(0, 0);
-      // sets the appropriate variable for the error message display
-      setValidationInfo(fail);
-      // shows error message to user
-      setShowFail(true);
-    }
-  };
+    event.stopPropagation();
+  }
+  event.preventDefault();
+  // Check the inputs for validity
+  if (validateInputs(cardName, cardNum, expDate, cvv)) {
+    // Enables spinner while the call to Commerce completes
+    setSpinnerVisible(true);
+    // Sends checkout to Commerce
+    executeCheckout(checkoutToken);
+  } else {
+    // If something is wrong in form, figure out which field was improperly filled
+    let fail = figureOutErrors(cardName, cardNum, expDate, cvv);
+    // Scroll to top of page
+    window.scrollTo(0, 0);
+    // Sets the appropriate variable for the error message display
+    setValidationInfo(fail);
+    // Shows error message to user
+    setShowFail(true);
+  }
+};
 ```
 
 **5. `useEffect()` hooks for your Checkout**
 
 In order to handle all of the data needed for a checkout, you will be using several `useEffect()` hooks to keep track of the different lifecycle events this page will experience.
 
-To initialize a checkout, you will need to make a call to `Commerce` and generate a checkout token. To do this, import `Commerce` and create a variable with your sandbox public key. Put it directly under the import section of `App.js`. (If needed, you can find your key in the [Developer section](https://dashboard.chec.io/setup/developer) of Chec Dashboard's 'Setup' tab).
+To initialize a checkout, you will need to make a call to `Commerce` and [generate a checkout token](https://commercejs.com/docs/sdk/checkout#generate-token). To do this, import `Commerce` and create a variable with your sandbox public key. Put it directly under the import section of `App.js`. (If needed, you can find your key in the [Developer section](https://dashboard.chec.io/setup/developer) of Chec Dashboard's 'Setup' tab).
 
 ```js
-//App.js
+// App.js
 import Commerce from "@chec/commerce.js";
 
 const commerce = new Commerce(
-  "YOUR SANDBOX KEY GOES HERE"
+  "{YOUR_SANDBOX_PUBLIC_KEY}"
 );
 ```
 
 Now take advantage of `useEffect()` to generate a checkout token on page load. For the sake of simplicity, this tutorial is using a permalink that references a single product. If needed, you can find the permalink to your product in the `Options` section of Chec's [Product Dashboard](https://dashboard.chec.io/).
 ```js
- //App.js
+// App.js
 
-  useEffect(() => {
-    commerce.checkout
-      .generateToken("YOUR PRODUCT PERMALINK GOES HERE", { type: "permalink" })
-      .then((res) => {
-        setCheckoutToken(res);
-        setCurrentCart(res);
-      })
-      .catch((err) => {
-        console.log("Something went wrong with the token generation", err);
-      });
-  }, []);
+useEffect(() => {
+  commerce.checkout
+    .generateToken("YOUR PRODUCT PERMALINK", { type: "permalink" })
+    .then((res) => {
+      setCheckoutToken(res);
+      setCurrentCart(res);
+    })
+    .catch((err) => {
+      console.log("Something went wrong with the token generation", err);
+    });
+}, []);
 ```
 
 In most real-world cases, you will probably want to reference a user's previously created cart instead of one that is hard-coded. You can easily pass the needed cart ID via the url when you route to this page. To do so, just change the code for `generateToken()` to look something like this:
 ```js
 let cartId = props.match.params.id;
-commerce.checkout.generateToken(cartId, { type: "cart" })
+commerce.checkout.generateToken('cartId', { type: "cart" })
 ```
 
 It is also worth noting that, if needed, you can retrieve a previously generated token from `Commerce` in much the same manner as generating a new one. You would simply exchange the `generateToken()` method with `getToken()`.
 
-Now create a function that will handle the checkout once the user clicks the `Complete Order` button. Again, this guide presents a streamlined checkout experience. `Commerce` has many additional options available that are not reflected in the basic checkout below. To see an example of all the options available during a checkout experience, see [Chec's documentation](https://commercejs.com/docs/api/#generate-token).
+Now create a function that will handle the checkout once the user clicks the `Complete Order` button. Again, this guide presents a streamlined checkout experience. Commerce.js has many additional options available that are not reflected in the basic checkout below. To see an example of all the options available during a checkout experience, see the [Commerce.js documentation](https://commercejs.com/docs/sdk/checkout/#generate-token).
 
 ```js
- //App.js
+// App.js
 
- function executeCheckout(checkoutToken) {
-    commerce.checkout
-      .capture(checkoutToken.id, {
-        line_items: lineItems,
-        conditionals: {
-          collects_billing_address: true,
-        },
-        customer: {
-          firstname: buyerFirstName,
-          lastname: buyerLastName,
-          email: email,
-        },
-        shipping: {
-          name: `${buyerFirstName} ${buyerLastName}`,
-          street: address,
-          town_city: city,
-          county_state: geoState,
+function executeCheckout(checkoutToken) {
+  commerce.checkout
+    .capture(checkoutToken.id, {
+      line_items: lineItems,
+      conditionals: {
+        collects_billing_address: true,
+      },
+      customer: {
+        firstname: buyerFirstName,
+        lastname: buyerLastName,
+        email: email,
+      },
+      shipping: {
+        name: `${buyerFirstName} ${buyerLastName}`,
+        street: address,
+        town_city: city,
+        county_state: geoState,
+        postal_zip_code: zipCode,
+        country: "US",
+      },
+      fulfillment: {
+        // The shipping method ID for "USPS Ground" (for example)
+
+        shipping_method: "ship_1ypbroE658n4ea",
+      },
+      payment: {
+        // Test Gateway is enabled by default, and is used when you submit orders with
+        // your sandbox API key
+        gateway: "test_gateway",
+        card: {
+          number: cardNum,
+          expiry_month: expDate.substring(0, 2),
+          expiry_year: expDate.substring(3, 5),
+          cvc: cvv,
           postal_zip_code: zipCode,
-          country: "US",
         },
-        fulfillment: {
-          // The shipping method ID for "USPS Ground" (for example)
-
-          shipping_method: "ship_1ypbroE658n4ea",
-        },
-        payment: {
-          // Test Gateway is enabled by default, and is used when you submit orders with
-          // your sandbox API key
-          gateway: "test_gateway",
-          card: {
-            number: cardNum,
-            expiry_month: expDate.substring(0, 2),
-            expiry_year: expDate.substring(3, 5),
-            cvc: cvv,
-            postal_zip_code: zipCode,
-          },
-        },
-      })
-      .then((response) => {
-        // triggers success popup message
-        setShowSuccess(true);
-        // resets card state (which empties all entry fields)
-        setCardState("");
-        // empties the user's 'current cart' at top of page
-        setCurrentCart("");
-        // cancels spinner triggered by clicking the "complete order" button.
-        setSpinnerVisible(false);
-        // return to top of page
-        window.scrollTo(0, 0);
-        // You could save responseId to hook here and then pass that via url to response page
-        console.log(
-          "Great, your checkout was captured successfully! Checkout the response object for receipt info.",
-          response
-        );
-      })
-      .catch((error) => {
-        // sets the variable in the failure user message
-        setValidationInfo("submission");
-        // cancels spinner triggered by clicking the "complete order" button.
-        setSpinnerVisible(false);
-        // shows error message to user
-        setShowFail(true);
-        // scrolls to top of page
-        window.scrollTo(0, 0);
-        console.log(error);
-      });
-  }
-
+      },
+    })
+    .then((response) => {
+      // Triggers success popup message
+      setShowSuccess(true);
+      // Resets card state (which empties all entry fields)
+      setCardState("");
+      // Empties the user's 'current cart' at top of page
+      setCurrentCart("");
+      // Cancels spinner triggered by clicking the "complete order" button.
+      setSpinnerVisible(false);
+      // Return to top of page
+      window.scrollTo(0, 0);
+      // You could save responseId to hook here and then pass that via url to response page
+      console.log(
+        "Great, your checkout was captured successfully! Checkout the response object for receipt info.",
+        response
+      );
+    })
+    .catch((error) => {
+      // Sets the variable in the failure user message
+      setValidationInfo("submission");
+      // Cancels spinner triggered by clicking the "complete order" button.
+      setSpinnerVisible(false);
+      // Shows error message to user
+      setShowFail(true);
+      // Scrolls to top of page
+      window.scrollTo(0, 0);
+      console.log(error);
+    });
+}
 ```
 
 Now that you have created a function to handle the checkout, set up a hook that will capture the line items in a user's cart when a checkout token is generated and format them for use in the `executeCheckout()` function you just created.
 
 ```js
- //App.js
+ // App.js
 
 useEffect(() => {
-    //whenever checkoutToken is updated, finds current line items and formats them for the checkout object
-    if (checkoutToken.line_items !== undefined) {
-      let itemsInCart = {};
-      checkoutToken.line_items.forEach((item) => {
-        itemsInCart = {
-          ...itemsInCart,
-          [item.id]: {
-            quantity: 1,
-          },
-        };
-      });
-      setLineItems(itemsInCart);
-    }
-  }, [checkoutToken]);
+  // Whenever checkoutToken is updated, finds current line items and formats them for the checkout object
+  if (checkoutToken.line_items !== undefined) {
+    let itemsInCart = {};
+    checkoutToken.line_items.forEach((item) => {
+      itemsInCart = {
+        ...itemsInCart,
+        [item.id]: {
+          quantity: 1,
+        },
+      };
+    });
+    setLineItems(itemsInCart);
+  }
+}, [checkoutToken]);
 ```
 
-A cart is not all that you will need for a checkout, however. You also need to handle user inputs. To do this, set up a `useEffect` hook that watches for changes in `cardState`. This handles user inputs (and make them more readible and accessible later). You can also use ternary operators to separate user inputs into individual hooks if they are truthy.
+A cart is not all that you will need for a checkout, however. You also need to handle user inputs. To do this, set up a `useEffect` hook that watches for changes in `cardState`. This handles user inputs (and makes them more readible and accessible later). You can also use ternary operators to separate user inputs into individual hooks if they are truthy.
 
 ```js
- //App.js
+// App.js
 
-  useEffect(() => {
-    // each of the following looks for an entry in a field and, if there is one, updates the corresponding hook
-    cardState.cardNum
-      ? handleFormChange(cardState.cardNum)
-      : handleFormChange("");
-    cardState.expDate
-      ? handleDateChange(cardState.expDate)
-      : handleDateChange("");
-    cardState.cvv ? handleCvvChange(cardState.cvv) : handleCvvChange("");
-    cardState.cardName ? setName(cardState.cardName) : setName("");
-    cardState.buyerFirstName
-      ? setBuyerFirstName(cardState.buyerFirstName)
-      : setBuyerFirstName("");
-    cardState.buyerLastName
-      ? setBuyerLastName(cardState.buyerLastName)
-      : setBuyerLastName("");
-    cardState.email ? setEmail(cardState.email) : setEmail("");
-    cardState.address ? setAddress(cardState.address) : setAddress("");
-    cardState.city ? setCity(cardState.city) : setCity("");
-    cardState.geoState ? setGeoState(cardState.geoState) : setGeoState("");
-    cardState.zipCode ? setZipCode(cardState.zipCode) : setZipCode("");
-  }, [cardState]);
+useEffect(() => {
+  // Each of the following looks for an entry in a field and, if there is one, updates the corresponding hook
+  cardState.cardNum
+    ? handleFormChange(cardState.cardNum)
+    : handleFormChange("");
+  cardState.expDate
+    ? handleDateChange(cardState.expDate)
+    : handleDateChange("");
+  cardState.cvv ? handleCvvChange(cardState.cvv) : handleCvvChange("");
+  cardState.cardName ? setName(cardState.cardName) : setName("");
+  cardState.buyerFirstName
+    ? setBuyerFirstName(cardState.buyerFirstName)
+    : setBuyerFirstName("");
+  cardState.buyerLastName
+    ? setBuyerLastName(cardState.buyerLastName)
+    : setBuyerLastName("");
+  cardState.email ? setEmail(cardState.email) : setEmail("");
+  cardState.address ? setAddress(cardState.address) : setAddress("");
+  cardState.city ? setCity(cardState.city) : setCity("");
+  cardState.geoState ? setGeoState(cardState.geoState) : setGeoState("");
+  cardState.zipCode ? setZipCode(cardState.zipCode) : setZipCode("");
+}, [cardState]);
 ```
 
 Now, in order for your animation to change when the user types in different credit card numbers, you need to create a listener for the `cardNum` hook.
 ```js
- //App.js
+//App.js
 
-  // sets card type when the card Number changes. This is used to change the animation backgound img
-  useEffect(() => {
-    const currentCard = findCardType(cardNum);
-    setCardType(currentCard);
-  }, [cardNum]);
+// Sets card type when the card number changes. This is used to change the animation backgound image
+useEffect(() => {
+  const currentCard = findCardType(cardNum);
+  setCardType(currentCard);
+}, [cardNum]);
 ```
 
-At this point, App.js should look something like this:
+At this point, `App.js` should look something like this:
 
 <details>
 <summary>Click to see `App.js` at this juncture</summary>
@@ -699,7 +699,7 @@ Before adding more to `App.js`, turn your attention to `helperFunctions.js`. Her
 First, you should create a function that checks if a user's card number, cvv, and expiration date are valid.
 
 ```js
-//helperFunctions.js
+// helperFunctions.js
 
 import valid from "card-validator";
 export function validateInputs(name, number, date, cvv) {
@@ -720,7 +720,7 @@ export function validateInputs(name, number, date, cvv) {
 
 Then make a function that will return a string, indicating which input was invalid. (You will later integrate this with an alert which uses the returned value in a template literal, and displays it to the user).
 ```js
-//helperFunctions.js
+// helperFunctions.js
 
 export function figureOutErrors(name, number, date, cvv) {
   if (typeof name !== "string") {
@@ -738,33 +738,33 @@ export function figureOutErrors(name, number, date, cvv) {
 }
 ```
 
-It is also important to control user inputs for security reasons. You can use regex to control what characters a user is allowed to type in a given field. The following functions limit which characters a user is allowed to use andformat their inputs properly (so that they look standard on the page).
+It is also important to control user inputs for security reasons. You can use regex to control what characters a user is allowed to type in a given field. The following functions limit which characters a user is allowed to use and format their inputs properly (so that they look standard on the page).
 
 ```js
-//helperFunctions.js
+// helperFunctions.js
 
-// sanitizes card input
+// Sanitizes card input
 function cleanInput(value) {
   return value.replace(/\D+/g, "");
 }
 
-// formats credit card based on type
+// Formats credit card based on type
 export function formatCreditCard(value) {
-  // brings in cleaned value inputted
+  // Brings in cleaned value inputted
   const cleanValue = cleanInput(value);
-  // find first number of card (since cards have unique first numbers, this tells the type of card used.)
+  // Find first number of card (since cards have unique first numbers, this tells the type of card used).
   const firstNumber = cleanValue.charAt(0);
   let currentValue;
 
   switch (firstNumber) {
-    // 3 is for american express (which has differnt formatting than other cards)
+    // 3 is for American Express (which has different formatting than other cards).
     case "3":
       currentValue = `${cleanValue.slice(0, 4)} ${cleanValue.slice(
         4,
         10
       )} ${cleanValue.slice(10, 15)}`;
       break;
-    // sets up formatting for normal cards (into groups of 4 numbers)
+    // Sets up formatting for normal cards (into groups of 4 numbers)
     default:
       currentValue = `${cleanValue.slice(0, 4)} ${cleanValue.slice(
         4,
@@ -790,7 +790,7 @@ export function dateCheck(text) {
   }
 }
 
-// formats CVV
+// Formats CVV
 export function cvvCheck(text) {
   let cleanText = text.replace(/\D/g, "").replace(/\W/gi, "");
   let all = cleanText.split("");
@@ -830,7 +830,7 @@ function FormElement(props) {
 
 export default FormElement;
 ```
-Now move to `FormCard.js`. Here, make a component that will create a bootstrapped card with multiple input fields (created with the `FormElement` component).
+Now move to `FormCard.js`. Here, make a component that will create a Bootstrap card with multiple input fields (created with the `FormElement` component).
 
 ```js
 //FormCard.js
@@ -887,7 +887,7 @@ const hovering = useSpring({
 ```
 To hook it all together, wrap your card in an `animated.div` that toggles the hovered state and sets the style to represent your previously declared values. Once you've done this, `FormCard.js` should look something like:
 ```js
-//FormCard.js
+// FormCard.js
 
 import React, { useState } from "react";
 import { Row, Form, Card, Col } from "react-bootstrap";
@@ -897,7 +897,7 @@ import FormElement from "./FormElement";
 function FormCard(props) {
   // Animation Value
   const [hovered, setHovered] = useState(false);
-  // sets animation for the form when user hovers over it
+  // Sets animation for the form when user hovers over it
   const hovering = useSpring({
     transform: hovered
       ? "translate3d(0px,0,0) scale(1.05) rotateX(0deg)"
@@ -941,13 +941,13 @@ export default FormCard;
 
 ```
 
-As you can see above, mapping through `props.formDetails` creates each text field. Create those details now by navigating to your `FormContents` folder. Once there, create a file called `BuyerFormDetails`. This file only needs to hold a single, exported function. This function takes in variables (which will be supplied by the user) and returns the information needed to create a bootstrapped card.
+As you can see above, mapping through `props.formDetails` creates each text field. Create those details now by navigating to your `FormContents` folder. Once there, create a file called `BuyerFormDetails`. This file only needs to hold a single, exported function. This function takes in variables (which will be supplied by the user) and returns the information needed to create a Bootstrap card.
 
 <details>
 <summary>Click to see BuyerFormDetails.js</summary>
 
 ```js
-//BuyerFormDetails.js
+// BuyerFormDetails.js
 
 const BuyerFormDetails = (
   buyerFirstName,
@@ -1026,7 +1026,7 @@ While you are here, go ahead and create a second file in the `FormContents` fold
 <summary>Click to see CardFormDetails.js</summary>
 
 ```js
-//CardFormDetails.js
+// CardFormDetails.js
 
 const CardFormDetails = (cardNum, cardName, expDate, cvv) => [
   {
@@ -1086,7 +1086,7 @@ You will also need a submission button for your cards. Create one now in `App.js
 </Row>
 ```
 
-At this point, navigate to `CartCard.js` and create a bootstrapped `Card` that takes in the user's current cart details and displays them. For this guide, the display can be fairly simple— just line items, individual prices, and the total price. If you would like to explore some of the other cart data that `Commerce.js` makes available, check out their [documentation](https://commercejs.com/docs/api/#retrieve-a-cart)
+At this point, navigate to `CartCard.js` and create a Bootstrap `Card` that takes in the user's current cart details and displays them. For this guide, the display can be fairly simple— just line items, individual prices, and the total price. If you would like to explore some of the other cart data that `Commerce.js` makes available, check out their [documentation](https://commercejs.com/docs/sdk/cart#retrieve-cart)
 
 ```js
 //CartCard.js
@@ -1098,7 +1098,7 @@ function CartCard(props) {
   // Sets up a 'current cart' for the user (so they know what they're buying
 
   let cart;
-  // if there is a cart, set variable 'cart' to reflect line items in it
+  // If there is a cart, set variable 'cart' to reflect line items in it
   props.currentCart ? (cart = props.currentCart.line_items) : (cart = []);
 
   return (
@@ -1179,7 +1179,7 @@ return(
 Click here to see what `App.js` looks like at this point.</summary>
 
 ```js
-//App.js
+// App.js
 
 import React, { useEffect, useState } from "react";
 import { Row, Col, Container } from "react-bootstrap";
@@ -1208,14 +1208,14 @@ function App() {
   // Raw user input for Credit Card Info
   const [cardState, setCardState] = useState({});
 
-  // Formatted Values for Credit Card Info
+  // Formatted values for credit card Info
   const [cardNum, setCardNum] = useState("");
   const [cardName, setName] = useState("");
   const [expDate, setExpDate] = useState("");
   const [cvv, setCvv] = useState("");
   const [cardType, setCardType] = useState("");
 
-  //State for Buyer Info
+  // State for buyer info
   const [buyerFirstName, setBuyerFirstName] = useState("");
   const [buyerLastName, setBuyerLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -1240,44 +1240,44 @@ function App() {
 
   const handleFormChange = (text) => {
     let userCardInput = formatCreditCard(text);
-    //sets card number hook with formatted/validated input
+    // Sets card number hook with formatted/validated input
     setCardNum(userCardInput);
   };
 
   const handleDateChange = (text) => {
     let userDateInput = dateCheck(text);
-    //sets expiration date hook with formatted/validated input
+    // Sets expiration date hook with formatted/validated input
     setExpDate(userDateInput);
   };
 
   const handleCvvChange = (text) => {
     let userCvvInput = cvvCheck(text);
-    //sets cvv hook with formatted/validated input
+    // Sets cvv hook with formatted/validated input
     setCvv(userCvvInput);
   };
 
   const handleSubmit = (event) => {
-    // checks for blank fields, etc. in bootstrap form
+    // Checks for blank fields, etc. in the Bootstrap form
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }
     event.preventDefault();
-    // check the inputs for validity
+    // Check the inputs for validity
     if (validateInputs(cardName, cardNum, expDate, cvv)) {
-      // enables spinner while the call to Commerce completes
+      // Enables spinner while the call to Commerce completes
       setSpinnerVisible(true);
-      // sends checkout to Commerce
+      // Sends checkout to Commerce
       executeCheckout(checkoutToken);
     } else {
       // If something is wrong in form, figure out which field was improperly filled
       let fail = figureOutErrors(cardName, cardNum, expDate, cvv);
       // scroll to top of page
       window.scrollTo(0, 0);
-      // sets the appropriate variable for the error message display
+      // Sets the appropriate variable for the error message display
       setValidationInfo(fail);
-      // shows error message to user
+      // Shows error message to user
       setShowFail(true);
     }
   };
@@ -1333,15 +1333,15 @@ function App() {
         },
       })
       .then((response) => {
-        // triggers success popup message
+        // Triggers success popup message
         setShowSuccess(true);
-        // resets card state (which empties all entry fields)
+        // Resets card state (which empties all entry fields)
         setCardState("");
-        // empties the user's 'current cart' at top of page
+        // Empties the user's 'current cart' at top of page
         setCurrentCart("");
-        // cancels spinner triggered by clicking the "complete order" button.
+        // Cancels spinner triggered by clicking the "complete order" button.
         setSpinnerVisible(false);
-        // return to top of page
+        // Return to top of page
         window.scrollTo(0, 0);
         // You could save responseId to hook here and then pass that via url to response page
         console.log(
@@ -1350,11 +1350,11 @@ function App() {
         );
       })
       .catch((error) => {
-        // sets the variable in the failure user message
+        // Sets the variable in the failure user message
         setValidationInfo("submission");
-        // cancels spinner triggered by clicking the "complete order" button.
+        // Cancels spinner triggered by clicking the "complete order" button.
         setSpinnerVisible(false);
-        // shows error message to user
+        // Shows error message to user
         setShowFail(true);
         // scrolls to top of page
         window.scrollTo(0, 0);
@@ -1363,7 +1363,7 @@ function App() {
   }
 
   useEffect(() => {
-    //whenever checkoutToken is updated, finds current line items and formats them for the checkout object
+    // Whenever checkoutToken is updated, finds current line items and formats them for the checkout object
     if (checkoutToken.line_items !== undefined) {
       let itemsInCart = {};
       checkoutToken.line_items.forEach((item) => {
@@ -1379,7 +1379,7 @@ function App() {
   }, [checkoutToken]);
 
   useEffect(() => {
-    // each of the following looks for an entry in a field and, if there is one, updates the corresponding hook
+    // Each of the following looks for an entry in a field and, if there is one, updates the corresponding hook
     cardState.cardNum
       ? handleFormChange(cardState.cardNum)
       : handleFormChange("");
@@ -1401,7 +1401,7 @@ function App() {
     cardState.zipCode ? setZipCode(cardState.zipCode) : setZipCode("");
   }, [cardState]);
 
-  // sets card type when the card Number changes. This is used to change the animation backgound img
+  // Sets card type when the card Number changes. This is used to change the animation backgound img
   useEffect(() => {
     const currentCard = findCardType(cardNum);
     setCardType(currentCard);
@@ -1486,7 +1486,7 @@ export default function Animation(props) {
 Next, navigate to `Scene.js` and import the model that you will use as the main object in this scene. This guide uses a [credit card model from sketchfab](https://sketchfab.com/models/130ec74a08b2445c91aae106d738d01e). Just as you did in the [last guide](https://github.com/Andreloui5/CommerceWithThree-part2), use `gltfjsx` to create editable, declarative models (just a reminder: you will need to add the gltf file and textures folder to your `public` folder). By changing the values of a mesh's `material` property, you can make the credit card look however you wish. This guide will be using .png files to replicate different credit cards. If needed, you can find the files this guide uses [here](https://github.com/Andreloui5/3DCreditCardForm/tree/master/src/assets/Cards).
 
 ```js
-//Scene.js
+// Scene.js
 
 import * as THREE from "three";
 import React, { useRef, useMemo } from "react";
@@ -1496,7 +1496,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 export default function Model(props) {
   // This renders the model for the credit card, and also loads the appropriate card background as user inputs change
 
-  // loads background image
+  // Loads background image
   const texture = useMemo(
     () => new THREE.TextureLoader().load(props.cardType),
     [props.cardType]
@@ -1540,13 +1540,13 @@ export default function Model(props) {
 To make your credit card come alive even more, you will need to handle text within your animation. To do this, open `CardText.js`. Import `Text` from `drei` and declare the following functional component. Note that the component takes in rotation, position, font size, and text content via props.
 
 ```js
-//CardText.js
+// CardText.js
 
 import React from "react";
 import { Text } from "drei";
 
 function CardText(props) {
-  // this element handles text elements that can then be rendered within our animation
+  // This element handles text elements that can then be rendered within our animation
   return (
     <Text
       rotation={props.rotation}
@@ -1578,9 +1578,9 @@ import * as THREE from "three";
 import Model from "./Scene";
 
 function Card(props) {
-  // this element is the credit card animation
+  // This element is the credit card animation
   const creditCard = useRef();
-  // card rotates automatically along the y axis
+  // Card rotates automatically along the y axis
   useFrame(() => (creditCard.current.rotation.y += 0.003));
 
   return (
@@ -1650,7 +1650,7 @@ To make your card appear in the scene, navigate back to `Animation.js`, import `
 Now is a good time to add controls to your animation. In `Controls.js` create the following functional component.
 
 ```js
-//Controls.js
+// Controls.js
 
 import React, { useRef } from "react";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -1691,7 +1691,7 @@ import React from "react";
 import * as THREE from "three";
 
 function BackDrop({ position, rotation, opacity }) {
-  // this element is one wall (used to make up the sides of the skybox background)
+  // This element is one wall (used to make up the sides of the skybox background)
   return (
     <mesh receiveShadow position={position} rotation={rotation}>
       <planeBufferGeometry attach="geometry" args={[101, 101]} />
@@ -1711,7 +1711,7 @@ export default BackDrop;
 Now, navigate to `Skybox.js` and return a fragment with six instances of `BackDrop`, positioned and rotated to make a box.
 
 ```js
-//Skybox.js
+// Skybox.js
 
 import React from "react";
 import BackDrop from "./BackDrop";
@@ -1827,9 +1827,9 @@ import FormElement from "./FormElement";
 import Animation from "../Animation/Animation";
 
 function FormCardWithAnimation(props) {
-  // Animation Value
+  // Animation value
   const [hovered, setHovered] = useState(false);
-  // sets animation for checkout box when hovered
+  // Sets animation for checkout box when hovered
   const hovering = useSpring({
     transform: hovered
       ? "translate3d(0px,0,0) scale(1.05) rotateX(0deg)"
@@ -1914,7 +1914,7 @@ Since you created `CardFormDetails.js` earlier, simply import `FormCardWithAnima
 To make your animation change as the user inputs their information, you will need one additional helper function. In `helperFunctions.js`, import the .png files you will be mapping to your animated card (the files used in this guide can be found [here](https://github.com/Andreloui5/3DCreditCardForm/tree/master/src/assets/Cards)). Then add the following function, which will take in a user's card number and return a string representing the user's card type.
 
 ```js
-//helperFunctions.js
+// helperFunctions.js
 
 export function findCardType(number) {
   const firstNumber = number.toString().charAt(0);
@@ -1954,9 +1954,9 @@ Now return to `App.js` and import the function.
 
 The last thing you will need for a fully functional checkout experience is a way to provide feedback to your customer.
 
-Navigate to `Spinner.js` and create a bootstrapped `<Spinner>`.
+Navigate to `Spinner.js` and create a Bootstrap `<Spinner>`.
 ```js
-//Spinner.js
+// Spinner.js
 import React from "react";
 import { Spinner } from "react-bootstrap";
 
@@ -1988,7 +1988,7 @@ Return to `App.js`, import your new component, and then the following code direc
 Another important way to provide feedback to your user is through the use of popup alerts. To make one, begin by importing `Alert` from "react-bootstrap". Then, directly underneath the `<Container>` element in `App.js`, use the `setShowSuccess` and `setShowFail` hooks you set up earlier to make your alerts render conditionally.
 
 ```js
-//App.js
+// App.js
 
 {/* success popup  */}
 {showSuccess ? (
@@ -2027,7 +2027,7 @@ You should have an application that uses `Commerce.js` to manage a user's checko
 
 [View the live demo](https://2wx95.csb.app/)
 
-## Built With
+## Built with:
 
 * [Commerce.js](https://commercejs.com/) - SDK for Chec commerce platform
 * [Drei](https://github.com/react-spring/drei) - Helper components for react-three-fiber
