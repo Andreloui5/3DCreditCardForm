@@ -10,7 +10,7 @@
     "antd": "^4.6.1",
     "card-validator": "^6.2.0",
     "drei": "0.0.72",
-    "node-sass": "^4.14.0",
+    "node-sass": "^7.0.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-credit-card-primitives": "^1.5.1",
